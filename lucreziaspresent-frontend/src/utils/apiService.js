@@ -8,6 +8,7 @@ export const callApi = async (route, methodUsed, bodyUsed, token) => {
       //   headers: {
       //     Authorization: `Bearer ${token}`,
       //     "Content-Type": "application/json",
+      // "Content-Type": "multipart/form-data",
       //   },
       ...(bodyUsed && { data: bodyUsed }),
       ...(methodUsed && { method: methodUsed }),
@@ -32,15 +33,14 @@ export const readEntries = async (setter) => {
   }
 };
 
-// export const addEntry = async (tokenGenerator, setter, data) => {
-//   try {
-//     let token = await tokenGenerator("create:entries");
-//     await callApi("journalEntries", "POST", data, token);
-//     await readEntries(null, data.email, setter, token);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+export const addEntry = async (setter, data) => {
+  try {
+    await callApi("entry", "POST", data);
+    await readEntries(setter);
+  } catch (error) {
+    throw error;
+  }
+};
 
 // export const editEntry = async (
 //   tokenGenerator,

@@ -1,7 +1,7 @@
 web:
   cors:
     allowed-origins: "*"
-    allowed-methods: "GET"
+    allowed-methods: "GET, POST"
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
