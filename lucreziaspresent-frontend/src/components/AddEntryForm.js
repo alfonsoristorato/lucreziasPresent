@@ -4,19 +4,12 @@ import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
 import { addEntry, editEntry } from "../utils/apiService";
 import Row from "react-bootstrap/Row";
-const AddEntryForm = ({
-  setEntries,
-  editMode,
-  setEditMode,
-  handleClose,
-  authenticated,
-}) => {
+const AddEntryForm = ({ setEntries, editMode, handleClose, authenticated }) => {
   const [fileTypeError, setFileTypeError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
@@ -66,7 +59,9 @@ const AddEntryForm = ({
           defaultValue={editMode ? editMode.name : ""}
           {...register("name", { required: true })}
         />
-        {errors.name && <span>Questo campo è obbligatorio.</span>}
+        {errors.name && (
+          <span className="error">Questo campo è obbligatorio.</span>
+        )}
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Titolo</Form.Label>
@@ -75,7 +70,9 @@ const AddEntryForm = ({
           defaultValue={editMode ? editMode.title : ""}
           {...register("title", { required: true })}
         ></Form.Control>
-        {errors.title && <span>Questo campo è obbligatorio.</span>}
+        {errors.title && (
+          <span className="error">Questo campo è obbligatorio.</span>
+        )}
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Ricordo</Form.Label>
@@ -86,7 +83,9 @@ const AddEntryForm = ({
           defaultValue={editMode ? editMode.content : ""}
           {...register("content", { required: true })}
         />
-        {errors.content && <span>Questo campo è obbligatorio.</span>}
+        {errors.content && (
+          <span className="error">Questo campo è obbligatorio.</span>
+        )}
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Data</Form.Label>
@@ -97,7 +96,9 @@ const AddEntryForm = ({
           defaultValue={editMode ? editMode.date : ""}
           {...register("date", { required: true })}
         />
-        {errors.date && <span>Questo campo è obbligatorio.</span>}
+        {errors.date && (
+          <span className="error">Questo campo è obbligatorio.</span>
+        )}
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Colore</Form.Label>
@@ -107,7 +108,9 @@ const AddEntryForm = ({
           defaultValue={editMode ? editMode.color : "#019ddf"}
           {...register("color", { required: true })}
         />
-        {errors.color && <span>Questo campo è obbligatorio.</span>}
+        {errors.color && (
+          <span className="error">Questo campo è obbligatorio.</span>
+        )}
       </Form.Group>
       {!editMode && (
         <Form.Group className="mb-3">
@@ -123,11 +126,13 @@ const AddEntryForm = ({
             {...register("file")}
           />
           {fileTypeError && (
-            <span>
+            <span className="error">
               Puoi aggiungere solo i seguenti formati: JPEG, JPG, PNG.
             </span>
           )}
-          {fileSizeError && <span>Il file non può superare i 10 MB.</span>}
+          {fileSizeError && (
+            <span className="error">Il file non può superare i 10 MB.</span>
+          )}
         </Form.Group>
       )}
 

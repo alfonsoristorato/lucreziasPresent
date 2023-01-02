@@ -142,7 +142,6 @@ const Entries = ({ authenticated }) => {
           <AddEntryForm
             editMode={editMode}
             setEntries={setEntries}
-            setEditMode={setEditMode}
             handleClose={handleClose}
             authenticated={authenticated}
           />

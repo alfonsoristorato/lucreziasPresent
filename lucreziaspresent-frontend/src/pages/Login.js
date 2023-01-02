@@ -38,7 +38,9 @@ const Login = ({ setAuthenticated }) => {
                     placeholder="Username"
                     {...register("username", { required: true })}
                   />
-                  {errors.username && <span>Questo campo è obbligatorio.</span>}
+                  {errors.username && (
+                    <span className="error">Questo campo è obbligatorio.</span>
+                  )}
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -48,13 +50,17 @@ const Login = ({ setAuthenticated }) => {
                     placeholder="Password"
                     {...register("password", { required: true })}
                   />
-                  {errors.password && <span>Questo campo è obbligatorio.</span>}
+                  {errors.password && (
+                    <span className="error">Questo campo è obbligatorio.</span>
+                  )}
                 </Form.Group>
                 <Row>
                   <Button variant="primary" type="submit">
                     Login
                   </Button>
-                  {authError && <span>Credenziali non riconosciute.</span>}
+                  {authError && (
+                    <span className="error">Credenziali non riconosciute.</span>
+                  )}
                 </Row>
               </Form>
             </Modal.Body>
