@@ -51,12 +51,12 @@ const Entries = ({ authenticated }) => {
     <FaGrinHearts />,
   ]);
   const handleClose = () => {
-    setEditMode(false);
     setShow(false);
+    setEditMode(false);
   };
   const handleCloseDelete = () => {
-    setDeleteMode(false);
     setShowDelete(false);
+    setDeleteMode(false);
   };
   const handleDelete = () => {
     deleteEntry(setEntries, deleteMode.id, authenticated, handleCloseDelete);
@@ -64,7 +64,7 @@ const Entries = ({ authenticated }) => {
   useEffect(() => {
     !authenticated && navigate("/login");
     authenticated && readEntries(setEntries, authenticated);
-  }, []);
+  }, [authenticated, navigate]);
 
   return (
     <Container className="entries">

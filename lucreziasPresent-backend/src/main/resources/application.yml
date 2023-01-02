@@ -1,13 +1,13 @@
 web:
   cors:
-    allowed-origins: "http://localhost:3000/"
+    allowed-origins: ${env.ALLOWED_ORIGINS}
     allowed-methods: "GET, POST, PATCH, DELETE"
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/lucreziasPresent
-    username: admin
-    password: password
+    url: ${env.DB_URL}
+    username: ${env.MYSQL_USERNAME}
+    password: ${env.MYSQL_PASSWORD}
   servlet:
     multipart:
       max-file-size: 15MB
@@ -17,7 +17,6 @@ spring:
     generate-ddl: true
     show-sql: true
     properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
-
 server:
   compression:
     enabled: "true"
