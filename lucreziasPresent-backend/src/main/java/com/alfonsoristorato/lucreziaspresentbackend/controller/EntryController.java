@@ -32,8 +32,16 @@ public class EntryController {
 
     @PatchMapping("/{entryId}")
     public ResponseEntity<Entry> editEntry(@ModelAttribute EntryFormWrapper entry,
-            @PathVariable(required = false) int entryId)
+            @PathVariable Integer entryId)
             throws IOException {
         return new ResponseEntity<>(entryService.editEntry(entry, entryId), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{entryId}")
+    public ResponseEntity<String> deleteEntry(
+            @PathVariable Integer entryId)
+            throws IOException {
+        entryService.deleteEntry(entryId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

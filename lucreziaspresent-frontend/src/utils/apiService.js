@@ -72,12 +72,12 @@ export const editEntry = async (
   }
 };
 
-// export const deleteEntry = async (tokenGenerator, setter, data) => {
-//   try {
-//     let token = await tokenGenerator("delete:entries");
-//     await callApi(`journalEntries/${data.id}`, "DELETE", null, token);
-//     await readEntries(null, data.email, setter, token);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+export const deleteEntry = async (setter, id, authenticated, handleClose) => {
+  try {
+    await callApi(`entry/${id}`, "DELETE", null, authenticated);
+    await readEntries(setter, authenticated);
+    handleClose();
+  } catch (error) {
+    throw error;
+  }
+};

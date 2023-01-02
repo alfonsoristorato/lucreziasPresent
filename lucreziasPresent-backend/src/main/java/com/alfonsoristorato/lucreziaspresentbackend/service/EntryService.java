@@ -66,4 +66,8 @@ public class EntryService {
         entryToSave.get().setTitle(entryFormWrapper.getTitle());
         return entryRepository.save(entryToSave.get());
     }
+
+    public void deleteEntry(Integer entryId) {
+        entryRepository.deleteById((long) entryId);
+    }
 }

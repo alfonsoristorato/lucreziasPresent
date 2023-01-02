@@ -1,19 +1,12 @@
 import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import Modal from "react-bootstrap/Modal";
-
-import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import NavigationIcon from "@mui/icons-material/Navigation";
 
-import { useEffect, useRef, useState } from "react";
-import { readEntries } from "../utils/apiService";
+import { useEffect, useState } from "react";
+import { deleteEntry, readEntries } from "../utils/apiService";
 import {
   VerticalTimeline,
   VerticalTimelineElement,
@@ -40,7 +33,9 @@ import { useNavigate } from "react-router-dom";
 const Entries = ({ authenticated }) => {
   const [entries, setEntries] = useState([]);
   const [editMode, setEditMode] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
   const [show, setShow] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const navigate = useNavigate();
 
   const [icons] = useState([
@@ -56,11 +51,16 @@ const Entries = ({ authenticated }) => {
     <FaGrinHearts />,
   ]);
   const handleClose = () => {
-    setShow(false);
     setEditMode(false);
+    setShow(false);
   };
-  const handleShow = () => setShow(true);
-
+  const handleCloseDelete = () => {
+    setDeleteMode(false);
+    setShowDelete(false);
+  };
+  const handleDelete = () => {
+    deleteEntry(setEntries, deleteMode.id, authenticated, handleCloseDelete);
+  };
   useEffect(() => {
     !authenticated && navigate("/login");
     authenticated && readEntries(setEntries, authenticated);
@@ -102,7 +102,10 @@ const Entries = ({ authenticated }) => {
                 <FaTrash
                   className="icon"
                   size={"1.2em"}
-                  onClick={() => setEditMode(true)}
+                  onClick={() => {
+                    setDeleteMode(entry);
+                    setShowDelete(true);
+                  }}
                 />
               </div>
 
@@ -119,7 +122,7 @@ const Entries = ({ authenticated }) => {
         })}
         <Fab
           variant="extended"
-          onClick={handleShow}
+          onClick={() => setShow(true)}
           className={"floating-button"}
         >
           <AddIcon sx={{ mr: 1 }} />
@@ -142,6 +145,27 @@ const Entries = ({ authenticated }) => {
             authenticated={authenticated}
           />
         </Modal.Body>
+      </Modal>
+      <Modal show={showDelete} onHide={handleCloseDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cancella ricordo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Sei sicuro/a di voler cancellare {deleteMode.title}?
+        </Modal.Body>
+
+        <div className="delete-buttons">
+          <Button
+            variant="secondary"
+            className="mb-2 mx-2"
+            onClick={handleCloseDelete}
+          >
+            Chiudi
+          </Button>
+          <Button variant="danger" className="mb-2 mx-2" onClick={handleDelete}>
+            Cancella
+          </Button>
+        </div>
       </Modal>
     </Container>
   );
