@@ -5,11 +5,11 @@ const apiOrigin = "http://localhost:8080";
 export const callApi = async (route, methodUsed, bodyUsed, token) => {
   try {
     const axiosInit = {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     "Content-Type": "application/json",
-      // "Content-Type": "multipart/form-data",
-      //   },
+      headers: {
+        Authorization: "Basic " + "alfo" + ":" + "alfo",
+        // "Content-Type": "application/json",
+        // "Content-Type": "multipart/form-data",
+      },
       ...(bodyUsed && { data: bodyUsed }),
       ...(methodUsed && { method: methodUsed }),
     };

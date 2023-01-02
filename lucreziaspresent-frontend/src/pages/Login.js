@@ -39,7 +39,7 @@ const Login = ({ authenticated, setAuthenticated }) => {
                   />
                 </Form.Group>
                 <Row>
-                  <Button variant="primary" onClick={handleSubmit}>
+                  <Button variant="primary" type="submit">
                     Login
                   </Button>
                 </Row>
