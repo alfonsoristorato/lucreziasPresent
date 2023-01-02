@@ -89,25 +89,27 @@ const Entries = ({ authenticated }) => {
               iconStyle={{ background: entry.color, color: "#fff" }}
               icon={icons[entry.icon]}
             >
-              <div className="action-icons">
-                <FaEdit
-                  className="icon"
-                  size={"1.2em"}
-                  onClick={() => {
-                    setEditMode(entry);
-                    setShow(true);
-                  }}
-                />
+              {authenticated.username === entry.owner && (
+                <div className="action-icons">
+                  <FaEdit
+                    className="icon"
+                    size={"1.2em"}
+                    onClick={() => {
+                      setEditMode(entry);
+                      setShow(true);
+                    }}
+                  />
 
-                <FaTrash
-                  className="icon"
-                  size={"1.2em"}
-                  onClick={() => {
-                    setDeleteMode(entry);
-                    setShowDelete(true);
-                  }}
-                />
-              </div>
+                  <FaTrash
+                    className="icon"
+                    size={"1.2em"}
+                    onClick={() => {
+                      setDeleteMode(entry);
+                      setShowDelete(true);
+                    }}
+                  />
+                </div>
+              )}
 
               <h3 className="vertical-timeline-element-title">{entry.title}</h3>
               <h4 className="vertical-timeline-element-subtitle">

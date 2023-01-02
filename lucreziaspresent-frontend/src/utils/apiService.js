@@ -26,10 +26,7 @@ export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
 
 export const readEntries = async (setter, authenticated) => {
   try {
-    let token;
-    // tokenPassed ? (token = tokenPassed) : (token = await tokenGenerator());
-
-    let response = await callApi("entry", "GET", null, authenticated);
+    const response = await callApi("entry", "GET", null, authenticated);
     setter(response);
   } catch (error) {
     throw error;

@@ -1,7 +1,6 @@
 package com.alfonsoristorato.lucreziaspresentbackend.model;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
 
