@@ -9,11 +9,11 @@ import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
 
 public class MyUserDetailsService implements UserDetailsService {
     @Autowired
-    private UserRepository repo;
+    private UserRepository userRepository;
 
     @Override
     public MyUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repo.findByUsername(username);
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user found with the given username");
         }

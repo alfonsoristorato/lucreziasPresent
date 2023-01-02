@@ -1,6 +1,6 @@
 web:
   cors:
-    allowed-origins: "*"
+    allowed-origins: "http://localhost:3000/"
     allowed-methods: "GET, POST"
 spring:
   datasource:

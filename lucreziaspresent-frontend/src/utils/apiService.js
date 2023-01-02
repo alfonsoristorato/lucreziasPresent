@@ -6,9 +6,7 @@ export const callApi = async (route, methodUsed, bodyUsed, token) => {
   try {
     const axiosInit = {
       headers: {
-        Authorization: "Basic " + "alfo" + ":" + "alfo",
-        // "Content-Type": "application/json",
-        // "Content-Type": "multipart/form-data",
+        Authorization: "Basic " + window.btoa("alfo" + ":" + "alfo"),
       },
       ...(bodyUsed && { data: bodyUsed }),
       ...(methodUsed && { method: methodUsed }),
