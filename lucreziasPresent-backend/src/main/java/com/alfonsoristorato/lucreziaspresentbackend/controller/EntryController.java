@@ -30,4 +30,10 @@ public class EntryController {
         return new ResponseEntity<>(entryService.saveEntry(entry), HttpStatus.CREATED);
     }
 
+    @PatchMapping("/{entryId}")
+    public ResponseEntity<Entry> editEntry(@ModelAttribute EntryFormWrapper entry,
+            @PathVariable(required = false) int entryId)
+            throws IOException {
+        return new ResponseEntity<>(entryService.editEntry(entry, entryId), HttpStatus.CREATED);
+    }
 }

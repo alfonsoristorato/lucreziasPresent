@@ -5,12 +5,22 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-const Login = ({ authenticated, setAuthenticated }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const handleSubmit = (data) => {
-    console.log(username, password);
+import { useForm } from "react-hook-form";
+import { login } from "../utils/apiService";
+import { useNavigate } from "react-router-dom";
+const Login = ({ setAuthenticated }) => {
+  const navigate = useNavigate();
+  const [authError, setAuthError] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    login(setAuthenticated, setAuthError, data, navigate);
   };
+
   return (
     <Container>
       <Row>
@@ -20,14 +30,15 @@ const Login = ({ authenticated, setAuthenticated }) => {
               <Modal.Title>Login</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form>
+              <Form onSubmit={handleSubmit(onSubmit)}>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                   <Form.Label>Username</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Username"
-                    onChange={(e) => setUsername(e.target.value)}
+                    {...register("username", { required: true })}
                   />
+                  {errors.username && <span>Questo campo è obbligatorio.</span>}
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -35,13 +46,15 @@ const Login = ({ authenticated, setAuthenticated }) => {
                   <Form.Control
                     type="password"
                     placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    {...register("password", { required: true })}
                   />
+                  {errors.password && <span>Questo campo è obbligatorio.</span>}
                 </Form.Group>
                 <Row>
                   <Button variant="primary" type="submit">
                     Login
                   </Button>
+                  {authError && <span>Credenziali non riconosciute.</span>}
                 </Row>
               </Form>
             </Modal.Body>

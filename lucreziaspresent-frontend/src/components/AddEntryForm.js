@@ -4,8 +4,13 @@ import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
 import { addEntry, editEntry } from "../utils/apiService";
 import Row from "react-bootstrap/Row";
-const AddEntryForm = ({ setEntries, editMode, setEditMode, handleClose }) => {
-  //   const { user } = useAuth0();
+const AddEntryForm = ({
+  setEntries,
+  editMode,
+  setEditMode,
+  handleClose,
+  authenticated,
+}) => {
   const [fileTypeError, setFileTypeError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const {
@@ -18,7 +23,7 @@ const AddEntryForm = ({ setEntries, editMode, setEditMode, handleClose }) => {
     setFileTypeError(false);
     setFileSizeError(false);
     let validForm = true;
-    if (data.file[0]) {
+    if (!editMode && data.file[0]) {
       if (
         !["image/jpeg", "image/png", "image/jpg"].includes(data.file[0]?.type)
       ) {
@@ -32,33 +37,37 @@ const AddEntryForm = ({ setEntries, editMode, setEditMode, handleClose }) => {
     }
     if (validForm) {
       let formData = new FormData();
-      data.file[0] && formData.append("file", data.file[0]);
+      !editMode && data.file[0] && formData.append("file", data.file[0]);
       formData.append("color", data.color);
       formData.append("content", data.content);
       formData.append("date", data.date);
-      formData.append("icon", Math.floor(Math.random() * 11));
-      formData.append("name", "Alfo");
+      !editMode && formData.append("icon", Math.floor(Math.random() * 10));
+      formData.append("name", data.name);
       formData.append("title", data.title);
+      !editMode && formData.append("owner", authenticated.username);
 
-      // !editMode && (data.email = user.email);
-
-      // editMode
-      //   ?
-      //     editEntry(
-      //           tokenGenerator,
-      //           setEntries,
-      //           data,
-      //           editMode.id,
-      //           editMode.emailHashed,
-      //           setEditMode
-      //         )
-      //   : addEntry(setEntries, data);
-      addEntry(setEntries, formData);
-      handleClose();
+      editMode
+        ? editEntry(
+            setEntries,
+            formData,
+            editMode.id,
+            authenticated,
+            handleClose
+          )
+        : addEntry(setEntries, formData, authenticated, handleClose);
     }
   };
   return (
     <Form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+      <Form.Group className="mb-3">
+        <Form.Label>Autore</Form.Label>
+        <Form.Control
+          placeholder="Mamma, Papà, Nonna, Nonno ecc..."
+          defaultValue={editMode ? editMode.name : ""}
+          {...register("name", { required: true })}
+        />
+        {errors.name && <span>Questo campo è obbligatorio.</span>}
+      </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Titolo</Form.Label>
         <Form.Control
@@ -100,24 +109,28 @@ const AddEntryForm = ({ setEntries, editMode, setEditMode, handleClose }) => {
         />
         {errors.color && <span>Questo campo è obbligatorio.</span>}
       </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Vuoi aggiungere una foto?</Form.Label>
-        <Form.Control
-          as="input"
-          type="file"
-          accept="image/*"
-          onChangeCapture={() => {
-            setFileTypeError(false);
-            setFileSizeError(false);
-          }}
-          defaultValue={editMode ? editMode.data : ""}
-          {...register("file")}
-        />
-        {fileTypeError && (
-          <span>Puoi aggiungere solo i seguenti formati: JPEG, JPG, PNG.</span>
-        )}
-        {fileSizeError && <span>Il file non può superare i 10 MB.</span>}
-      </Form.Group>
+      {!editMode && (
+        <Form.Group className="mb-3">
+          <Form.Label>Vuoi aggiungere una foto?</Form.Label>
+          <Form.Control
+            as="input"
+            type="file"
+            accept="image/*"
+            onChangeCapture={() => {
+              setFileTypeError(false);
+              setFileSizeError(false);
+            }}
+            {...register("file")}
+          />
+          {fileTypeError && (
+            <span>
+              Puoi aggiungere solo i seguenti formati: JPEG, JPG, PNG.
+            </span>
+          )}
+          {fileSizeError && <span>Il file non può superare i 10 MB.</span>}
+        </Form.Group>
+      )}
+
       <Row>
         <Button variant="secondary" className="mb-2" onClick={handleClose}>
           Chiudi

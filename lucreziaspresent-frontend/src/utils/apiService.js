@@ -2,12 +2,17 @@ import axios from "axios";
 
 const apiOrigin = "http://localhost:8080";
 
-export const callApi = async (route, methodUsed, bodyUsed, token) => {
+export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
   try {
     const axiosInit = {
-      headers: {
-        Authorization: "Basic " + window.btoa("alfo" + ":" + "alfo"),
-      },
+      ...(authenticated && {
+        headers: {
+          Authorization:
+            "Basic " +
+            window.btoa(authenticated.username + ":" + authenticated.password),
+        },
+      }),
+
       ...(bodyUsed && { data: bodyUsed }),
       ...(methodUsed && { method: methodUsed }),
     };
@@ -19,45 +24,53 @@ export const callApi = async (route, methodUsed, bodyUsed, token) => {
   }
 };
 
-export const readEntries = async (setter) => {
+export const readEntries = async (setter, authenticated) => {
   try {
     let token;
     // tokenPassed ? (token = tokenPassed) : (token = await tokenGenerator());
 
-    let response = await callApi("entry", "GET", null, null);
+    let response = await callApi("entry", "GET", null, authenticated);
     setter(response);
   } catch (error) {
     throw error;
   }
 };
 
-export const addEntry = async (setter, data) => {
+export const addEntry = async (setter, data, authenticated, handleClose) => {
   try {
-    await callApi("entry", "POST", data);
-    await readEntries(setter);
+    await callApi("entry", "POST", data, authenticated);
+    await readEntries(setter, authenticated);
+    handleClose();
   } catch (error) {
     throw error;
   }
 };
 
-// export const editEntry = async (
-//   tokenGenerator,
-//   setter,
-//   data,
-//   id,
-//   email,
-//   setEditMode
-// ) => {
-//   try {
-//     let token = await tokenGenerator("edit:entries");
+export const login = async (setAuthenticated, setAuthError, data, navigate) => {
+  try {
+    await callApi("login", "POST", data);
+    setAuthenticated(data);
+    navigate("/");
+  } catch (error) {
+    setAuthError(true);
+  }
+};
 
-//     await callApi(`journalEntries/${id}`, "PUT", data, token);
-//     await readEntries(null, email, setter, token);
-//     setEditMode(false);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+export const editEntry = async (
+  setter,
+  data,
+  id,
+  authenticated,
+  handleClose
+) => {
+  try {
+    await callApi(`entry/${id}`, "PATCH", data, authenticated);
+    await readEntries(setter, authenticated);
+    handleClose();
+  } catch (error) {
+    throw error;
+  }
+};
 
 // export const deleteEntry = async (tokenGenerator, setter, data) => {
 //   try {

@@ -11,4 +11,16 @@
     text-align: center;
     color: azure;
   }
+
+  .action-icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 0.2rem;
+    margin-right: 1rem;
+    .icon {
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+  }
 }

@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +30,7 @@ public class Entry {
     private String title;
     private Integer icon;
     private String color;
+    private String owner;
     private LocalDate date;
     @Lob
     @Column(name = "file", columnDefinition = "LONGBLOB")

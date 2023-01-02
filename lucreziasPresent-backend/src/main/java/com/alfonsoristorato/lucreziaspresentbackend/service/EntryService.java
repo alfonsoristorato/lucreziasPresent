@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -39,7 +40,9 @@ public class EntryService {
                     .icon(entryFormWrapper.getIcon())
                     .color(entryFormWrapper.getColor())
                     .date(entryFormWrapper.getDate())
-                    .file(FileUtils.compressImage(entryFormWrapper.getFile())).build();
+                    .owner(entryFormWrapper.getOwner())
+                    .file(FileUtils.compressImage(entryFormWrapper.getFile()))
+                    .build();
         } else {
             entryToSave = Entry.builder()
                     .name(entryFormWrapper.getName())
@@ -47,8 +50,20 @@ public class EntryService {
                     .title(entryFormWrapper.getTitle())
                     .icon(entryFormWrapper.getIcon())
                     .color(entryFormWrapper.getColor())
-                    .date(entryFormWrapper.getDate()).build();
+                    .date(entryFormWrapper.getDate())
+                    .owner(entryFormWrapper.getOwner())
+                    .build();
         }
         return entryRepository.save(entryToSave);
+    }
+
+    public Entry editEntry(EntryFormWrapper entryFormWrapper, Integer entryId) {
+        Optional<Entry> entryToSave = entryRepository.findById(((long) entryId));
+        entryToSave.get().setColor(entryFormWrapper.getColor());
+        entryToSave.get().setContent(entryFormWrapper.getContent());
+        entryToSave.get().setDate(entryFormWrapper.getDate());
+        entryToSave.get().setName(entryFormWrapper.getName());
+        entryToSave.get().setTitle(entryFormWrapper.getTitle());
+        return entryRepository.save(entryToSave.get());
     }
 }

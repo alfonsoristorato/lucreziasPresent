@@ -30,14 +30,19 @@ import {
   FaSmileBeam,
   FaSmileWink,
   FaSmile,
+  FaEdit,
+  FaTrash,
 } from "react-icons/fa";
 import AddEntryForm from "../components/AddEntryForm";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
-const Entries = () => {
+const Entries = ({ authenticated }) => {
   const [entries, setEntries] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
+
   const [icons] = useState([
     <FaSmile />,
     <FaSmileWink />,
@@ -50,11 +55,15 @@ const Entries = () => {
     <FaBaby />,
     <FaGrinHearts />,
   ]);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setEditMode(false);
+  };
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    readEntries(setEntries);
+    !authenticated && navigate("/login");
+    authenticated && readEntries(setEntries, authenticated);
   }, []);
 
   return (
@@ -64,7 +73,6 @@ const Entries = () => {
         <h4>Ti abbiamo scritto dei ricordi</h4>
       </div>
       <VerticalTimeline>
-        {console.log(entries)}
         {entries.map((entry) => {
           return (
             <VerticalTimelineElement
@@ -81,6 +89,23 @@ const Entries = () => {
               iconStyle={{ background: entry.color, color: "#fff" }}
               icon={icons[entry.icon]}
             >
+              <div className="action-icons">
+                <FaEdit
+                  className="icon"
+                  size={"1.2em"}
+                  onClick={() => {
+                    setEditMode(entry);
+                    setShow(true);
+                  }}
+                />
+
+                <FaTrash
+                  className="icon"
+                  size={"1.2em"}
+                  onClick={() => setEditMode(true)}
+                />
+              </div>
+
               <h3 className="vertical-timeline-element-title">{entry.title}</h3>
               <h4 className="vertical-timeline-element-subtitle">
                 da {entry.name}
@@ -114,6 +139,7 @@ const Entries = () => {
             setEntries={setEntries}
             setEditMode={setEditMode}
             handleClose={handleClose}
+            authenticated={authenticated}
           />
         </Modal.Body>
       </Modal>
