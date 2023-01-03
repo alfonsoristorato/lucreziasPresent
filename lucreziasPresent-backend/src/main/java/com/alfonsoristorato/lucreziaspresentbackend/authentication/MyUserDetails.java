@@ -45,7 +45,8 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+
+        return user.getAttempts() < 4;
     }
 
     @Override
@@ -57,4 +58,6 @@ public class MyUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

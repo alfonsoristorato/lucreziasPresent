@@ -59,7 +59,7 @@ const Login = ({ setAuthenticated }) => {
                     Login
                   </Button>
                   {authError && (
-                    <span className="error">Credenziali non riconosciute.</span>
+                    <span className="error">{authError}</span>
                   )}
                 </Row>
               </Form>

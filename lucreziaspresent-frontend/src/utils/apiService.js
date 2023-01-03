@@ -49,7 +49,7 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
     setAuthenticated(data);
     navigate("/");
   } catch (error) {
-    setAuthError(true);
+    setAuthError(error.response.data);
   }
 };
 
