@@ -4,7 +4,9 @@ import Image from "react-bootstrap/Image";
 import Modal from "react-bootstrap/Modal";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import Zoom from "@mui/material/Zoom";
 import { useEffect, useState } from "react";
 import { deleteEntry, readEntries } from "../utils/apiService";
 import {
@@ -23,12 +25,11 @@ import {
   FaSmileBeam,
   FaSmileWink,
   FaSmile,
-  FaEdit,
-  FaTrash,
 } from "react-icons/fa";
 import AddEntryForm from "../components/AddEntryForm";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { IconButton, Tooltip } from "@mui/material";
 
 const Entries = ({ authenticated }) => {
   const [entries, setEntries] = useState([]);
@@ -91,23 +92,28 @@ const Entries = ({ authenticated }) => {
             >
               {authenticated.username === entry.owner && (
                 <div className="action-icons">
-                  <FaEdit
-                    className="icon"
-                    size={"1.2em"}
-                    onClick={() => {
-                      setEditMode(entry);
-                      setShow(true);
-                    }}
-                  />
-
-                  <FaTrash
-                    className="icon"
-                    size={"1.2em"}
-                    onClick={() => {
-                      setDeleteMode(entry);
-                      setShowDelete(true);
-                    }}
-                  />
+                  <Tooltip title="Modifica" TransitionComponent={Zoom}>
+                    <IconButton>
+                      <ModeEditIcon
+                        sx={{ color: "white" }}
+                        onClick={() => {
+                          setEditMode(entry);
+                          setShow(true);
+                        }}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Cancella" TransitionComponent={Zoom}>
+                    <IconButton>
+                      <DeleteIcon
+                        sx={{ color: "white" }}
+                        onClick={() => {
+                          setDeleteMode(entry);
+                          setShowDelete(true);
+                        }}
+                      />
+                    </IconButton>
+                  </Tooltip>
                 </div>
               )}
 
