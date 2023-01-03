@@ -37,7 +37,6 @@ const AddEntryForm = ({ setEntries, editMode, handleClose, authenticated }) => {
       !editMode && formData.append("icon", Math.floor(Math.random() * 10));
       formData.append("name", data.name);
       formData.append("title", data.title);
-      !editMode && formData.append("owner", authenticated.username);
 
       editMode
         ? editEntry(

@@ -1,29 +1,32 @@
 package com.alfonsoristorato.lucreziaspresentbackend.service;
 
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.alfonsoristorato.lucreziaspresentbackend.model.Entry;
 import com.alfonsoristorato.lucreziaspresentbackend.model.EntryFormWrapper;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.EntryRepository;
 import com.alfonsoristorato.lucreziaspresentbackend.utils.FileUtils;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EntryService {
     @Autowired
     EntryRepository entryRepository;
 
-    public List<Entry> findAll() throws IOException {
+    public List<Entry> findAll() {
         List<Entry> entries = entryRepository.findAll();
         entries.sort(Comparator.comparing(Entry::getDate));
         return entries;
     }
 
-    public Entry saveEntry(EntryFormWrapper entryFormWrapper) throws IOException {
-        Entry entryToSave = new Entry();
+    public Entry saveEntry(EntryFormWrapper entryFormWrapper, Principal user) throws IOException {
+        Entry entryToSave;
         if (entryFormWrapper.getFile() != null) {
             entryToSave = Entry.builder()
                     .name(entryFormWrapper.getName())
@@ -32,7 +35,7 @@ public class EntryService {
                     .icon(entryFormWrapper.getIcon())
                     .color(entryFormWrapper.getColor())
                     .date(entryFormWrapper.getDate())
-                    .owner(entryFormWrapper.getOwner())
+                    .owner(user.getName())
                     .file(FileUtils.compressImage(entryFormWrapper.getFile()))
                     .build();
         } else {
@@ -43,23 +46,45 @@ public class EntryService {
                     .icon(entryFormWrapper.getIcon())
                     .color(entryFormWrapper.getColor())
                     .date(entryFormWrapper.getDate())
-                    .owner(entryFormWrapper.getOwner())
+                    .owner(user.getName())
                     .build();
         }
         return entryRepository.save(entryToSave);
     }
 
-    public Entry editEntry(EntryFormWrapper entryFormWrapper, Integer entryId) {
-        Optional<Entry> entryToSave = entryRepository.findById(((long) entryId));
-        entryToSave.get().setColor(entryFormWrapper.getColor());
-        entryToSave.get().setContent(entryFormWrapper.getContent());
-        entryToSave.get().setDate(entryFormWrapper.getDate());
-        entryToSave.get().setName(entryFormWrapper.getName());
-        entryToSave.get().setTitle(entryFormWrapper.getTitle());
-        return entryRepository.save(entryToSave.get());
+    @SneakyThrows
+    public Entry editEntry(EntryFormWrapper entryFormWrapper, Integer entryId, Principal user) {
+        Optional<Entry> entryToSave = entryRepository.findById((long) entryId);
+        if (entryToSave.isPresent()) {
+            if (entryToSave.get().getOwner().equals(user.getName())) {
+                entryToSave.get().setColor(entryFormWrapper.getColor());
+                entryToSave.get().setContent(entryFormWrapper.getContent());
+                entryToSave.get().setDate(entryFormWrapper.getDate());
+                entryToSave.get().setName(entryFormWrapper.getName());
+                entryToSave.get().setTitle(entryFormWrapper.getTitle());
+                return entryRepository.save(entryToSave.get());
+            }
+            throw new Exception("This entry belongs to another user");
+        }
+        throw new Exception("No entry with given id");
+
+
     }
 
-    public void deleteEntry(Integer entryId) {
-        entryRepository.deleteById((long) entryId);
+    @SneakyThrows
+    public void deleteEntry(Integer entryId, Principal user) {
+        Optional<Entry> entryToSave = entryRepository.findById((long) entryId);
+        if (entryToSave.isPresent()) {
+
+            if (entryToSave.get().getOwner().equals(user.getName())) {
+
+                entryRepository.deleteById((long) entryId);
+            } else {
+                throw new Exception("This entry belongs to another user");
+            }
+        } else {
+            throw new Exception("No entry with given id");
+        }
+
     }
 }
