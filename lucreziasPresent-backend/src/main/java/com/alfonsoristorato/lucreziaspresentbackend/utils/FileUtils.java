@@ -1,18 +1,17 @@
 package com.alfonsoristorato.lucreziaspresentbackend.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 
 public class FileUtils {
     public static byte[] compressImage(MultipartFile file) throws IOException {
