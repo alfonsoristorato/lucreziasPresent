@@ -93,24 +93,24 @@ const Entries = ({ authenticated }) => {
               {authenticated.username === entry.owner && (
                 <div className="action-icons">
                   <Tooltip title="Modifica" TransitionComponent={Zoom}>
-                    <IconButton>
+                    <IconButton                        onClick={() => {
+                      setEditMode(entry);
+                      setShow(true);
+                    }}>
                       <ModeEditIcon
                         sx={{ color: "white" }}
-                        onClick={() => {
-                          setEditMode(entry);
-                          setShow(true);
-                        }}
+
                       />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Cancella" TransitionComponent={Zoom}>
-                    <IconButton>
+                    <IconButton                      onClick={() => {
+                      setDeleteMode(entry);
+                      setShowDelete(true);
+                    }}>
                       <DeleteIcon
                         sx={{ color: "white" }}
-                        onClick={() => {
-                          setDeleteMode(entry);
-                          setShowDelete(true);
-                        }}
+
                       />
                     </IconButton>
                   </Tooltip>

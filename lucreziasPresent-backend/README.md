@@ -12,7 +12,7 @@
 ### Create a droplet on Digital Ocean
 Ubuntu version used 20.04 LTS
 
-### Buy a domain and link it to your droplet
+### Buy a domain and link it to your droplet (I used namecheap)
 https://docs.digitalocean.com/products/networking/dns/
 - remember to link the www version too
 
@@ -55,4 +55,4 @@ https://docs.digitalocean.com/products/networking/dns/
 - docker login
 - docker pull alfonsoristorato/lucrezia
 - docker logout
-- docker-compose up
+- docker-compose up (add -d if undetached)
