@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiOrigin = "http://localhost:8080";
+const apiOrigin = "https://lucreziaspresent.store";
 
 export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
   try {
