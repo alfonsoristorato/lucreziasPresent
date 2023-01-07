@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiOrigin = process.env.REACT_APP_API;
+const apiOrigin = "https://lucreziaspresent.store";
 
 export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
   try {
