@@ -1,7 +1,7 @@
 web:
   cors:
-    allowed-origins: ${env.ALLOWED_ORIGINS}
-    allowed-methods: "GET, POST, PATCH, DELETE"
+    allowed-origins: ${env.ALLOWED_ORIGINS_PROD}
+    allowed-methods: "GET, POST, PATCH, DELETE, OPTIONS"
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver

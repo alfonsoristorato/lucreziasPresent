@@ -3,7 +3,7 @@
 ### Create a docker image
 - ensure you have your .env file filled and in resources folder
 - create image from dockerfile:
-1. docker build -t alfonsoristorato/lucrezia .
+1. docker build -t alfonsoristorato/lucrezia:latest .
 - push it to dockerhub:
 1. docker login 
 2. docker push alfonsoristorato/lucrezia:latest
@@ -45,7 +45,7 @@ https://docs.digitalocean.com/products/networking/dns/
 
 ### Allow remote access to MySql (needed for docker to be able to connect)
   https://www.digitalocean.com/community/tutorials/how-to-allow-remote-access-to-mysql
-- just allow the port of your docker, do not change mysqld.cnf bind-address
+- allow docker port and bind address to docker0
 
 ### Transfer your docker-compose.yml to your droplet
 - without having to install git, you can use scp to transfer files:
@@ -53,6 +53,6 @@ https://docs.digitalocean.com/products/networking/dns/
 
 ### Start the application
 - docker login
-- docker pull alfonsoristorato/lucrezia
+- docker pull alfonsoristorato/lucrezia:latest
 - docker logout
 - docker-compose up (add -d if undetached)
