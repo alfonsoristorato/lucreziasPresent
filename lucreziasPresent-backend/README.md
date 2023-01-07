@@ -24,6 +24,15 @@ https://docs.digitalocean.com/products/networking/dns/
 
 ### Install nginx
   https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04#step-5-%E2%80%93-setting-up-server-blocks-(recommended)
+  nginx config for location:
+         proxy_pass http://localhost:8080;
+         proxy_http_version 1.1;
+         proxy_set_header Upgrade $http_upgrade;
+         proxy_set_header Connection keep-alive;
+         proxy_set_header Host $host;
+         proxy_cache_bypass $http_upgrade;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_set_header X-Forwarded-Proto $scheme;
 
 ### Secure Nginx with Let's Encrypt
   https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
