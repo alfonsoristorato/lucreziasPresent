@@ -13,12 +13,11 @@
     margin-top: 1rem;
   }
 
-  .action-icons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-bottom: 0.2rem;
-    margin-right: 1rem;
+  .subtitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 .delete-buttons {

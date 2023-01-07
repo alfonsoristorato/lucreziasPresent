@@ -90,37 +90,37 @@ const Entries = ({ authenticated }) => {
               iconStyle={{ background: entry.color, color: "#fff" }}
               icon={icons[entry.icon]}
             >
-              {authenticated.username === entry.owner && (
-                <div className="action-icons">
-                  <Tooltip title="Modifica" TransitionComponent={Zoom}>
-                    <IconButton                        onClick={() => {
-                      setEditMode(entry);
-                      setShow(true);
-                    }}>
-                      <ModeEditIcon
-                        sx={{ color: "white" }}
-
-                      />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Cancella" TransitionComponent={Zoom}>
-                    <IconButton                      onClick={() => {
-                      setDeleteMode(entry);
-                      setShowDelete(true);
-                    }}>
-                      <DeleteIcon
-                        sx={{ color: "white" }}
-
-                      />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-              )}
-
               <h3 className="vertical-timeline-element-title">{entry.title}</h3>
-              <h4 className="vertical-timeline-element-subtitle">
-                da {entry.name}
-              </h4>
+              <div className="subtitle">
+                <h4 className="vertical-timeline-element-subtitle">
+                  da {entry.name}
+                </h4>
+                {authenticated.username === entry.owner && (
+                  <div>
+                    <Tooltip title="Modifica" TransitionComponent={Zoom}>
+                      <IconButton
+                        onClick={() => {
+                          setEditMode(entry);
+                          setShow(true);
+                        }}
+                      >
+                        <ModeEditIcon sx={{ color: "white" }} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Cancella" TransitionComponent={Zoom}>
+                      <IconButton
+                        onClick={() => {
+                          setDeleteMode(entry);
+                          setShowDelete(true);
+                        }}
+                      >
+                        <DeleteIcon sx={{ color: "white" }} />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                )}
+              </div>
+
               <p>{entry.content}</p>
               {entry.file && (
                 <Image fluid src={`data:image/jpeg;base64,${entry.file}`} />
