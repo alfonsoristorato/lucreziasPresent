@@ -1,16 +1,20 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import Modal from "react-bootstrap/Modal";
+
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { IconButton, Tooltip } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Zoom from "@mui/material/Zoom";
-import { useEffect, useState } from "react";
-import { deleteEntry, readEntries } from "../utils/apiService";
+
 import {
   VerticalTimeline,
   VerticalTimelineElement,
@@ -28,10 +32,11 @@ import {
   FaSmileWink,
   FaSmile,
 } from "react-icons/fa";
-import AddEntryForm from "../components/AddEntryForm";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
-import { IconButton, Tooltip } from "@mui/material";
+
+import { deleteEntry, readEntries } from "../utils/apiService";
+import AddEntryModal from "../components/AddEntryModal";
+import DeleteEntryModal from "../components/DeleteEntryModal";
 
 const Entries = ({ authenticated }) => {
   const [entries, setEntries] = useState([]);
@@ -124,7 +129,7 @@ const Entries = ({ authenticated }) => {
                 )}
               </div>
 
-              <p>{entry.content}</p>
+              <p className="content">{entry.content}</p>
               {entry.file && (
                 <Image
                   fluid
@@ -160,43 +165,20 @@ const Entries = ({ authenticated }) => {
           </Tooltip>
         </div>
       </VerticalTimeline>
+      <AddEntryModal
+        show={show}
+        handleClose={handleClose}
+        editMode={editMode}
+        setEntries={setEntries}
+        authenticated={authenticated}
+      ></AddEntryModal>
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {editMode ? "Modifica ricordo" : "Aggiungi ricordo"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <AddEntryForm
-            editMode={editMode}
-            setEntries={setEntries}
-            handleClose={handleClose}
-            authenticated={authenticated}
-          />
-        </Modal.Body>
-      </Modal>
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title>Cancella ricordo</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Sei sicuro/a di voler cancellare {deleteMode.title}?
-        </Modal.Body>
-
-        <div className="delete-buttons">
-          <Button
-            variant="secondary"
-            className="mb-2 mx-2"
-            onClick={handleCloseDelete}
-          >
-            Chiudi
-          </Button>
-          <Button variant="danger" className="mb-2 mx-2" onClick={handleDelete}>
-            Cancella
-          </Button>
-        </div>
-      </Modal>
+      <DeleteEntryModal
+        showDelete={showDelete}
+        handleCloseDelete={handleCloseDelete}
+        deleteMode={deleteMode}
+        handleDelete={handleDelete}
+      ></DeleteEntryModal>
     </Container>
   );
 };

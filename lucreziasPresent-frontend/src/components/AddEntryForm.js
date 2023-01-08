@@ -1,9 +1,12 @@
 import { useState } from "react";
+
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useForm } from "react-hook-form";
-import { addEntry, editEntry } from "../utils/apiService";
 import Row from "react-bootstrap/Row";
+import { useForm } from "react-hook-form";
+
+import { addEntry, editEntry } from "../utils/apiService";
+
 const AddEntryForm = ({ setEntries, editMode, handleClose, authenticated }) => {
   const [fileTypeError, setFileTypeError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
