@@ -7,6 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Zoom from "@mui/material/Zoom";
 import { useEffect, useState } from "react";
 import { deleteEntry, readEntries } from "../utils/apiService";
@@ -136,12 +137,24 @@ const Entries = ({ authenticated }) => {
         })}
         <div className={"floating-button-container"}>
           <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
-            <Fab onClick={() => setShow(true)}>
+            <Fab
+              onClick={() => setShow(true)}
+              {...(useMediaQuery("(max-width:600px)") && { size: "small" })}
+              {...(useMediaQuery("(min-width:1170px)") && {
+                className: "out-of-boundary",
+              })}
+            >
               <FilterListIcon />
             </Fab>
           </Tooltip>
           <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
-            <Fab onClick={() => setShow(true)}>
+            <Fab
+              onClick={() => setShow(true)}
+              {...(useMediaQuery("(max-width:600px)") && { size: "small" })}
+              {...(useMediaQuery("(min-width:1170px)") && {
+                className: "out-of-boundary",
+              })}
+            >
               <AddIcon />
             </Fab>
           </Tooltip>
