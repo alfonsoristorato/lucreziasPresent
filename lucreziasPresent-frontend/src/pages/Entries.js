@@ -74,6 +74,7 @@ const Entries = ({ authenticated }) => {
         <h2>Ciao bimbo o bimba</h2>
         <h4>Ti abbiamo scritto dei ricordi</h4>
       </div>
+
       <VerticalTimeline>
         {entries.map((entry) => {
           return (
@@ -135,19 +136,12 @@ const Entries = ({ authenticated }) => {
         })}
         <div className={"floating-button-container"}>
           <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
-            <Fab
-              onClick={() => setShow(true)}
-              className={"floating-button-element"}
-            >
+            <Fab onClick={() => setShow(true)}>
               <FilterListIcon />
             </Fab>
           </Tooltip>
-          <hr></hr>
           <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
-            <Fab
-              onClick={() => setShow(true)}
-              className={"floating-button-element"}
-            >
+            <Fab onClick={() => setShow(true)}>
               <AddIcon />
             </Fab>
           </Tooltip>
