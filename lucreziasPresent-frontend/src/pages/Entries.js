@@ -4,6 +4,7 @@ import Image from "react-bootstrap/Image";
 import Modal from "react-bootstrap/Modal";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Zoom from "@mui/material/Zoom";
@@ -132,14 +133,25 @@ const Entries = ({ authenticated }) => {
             </VerticalTimelineElement>
           );
         })}
-        <Fab
-          variant="extended"
-          onClick={() => setShow(true)}
-          className={"floating-button"}
-        >
-          <AddIcon sx={{ mr: 1 }} />
-          Aggiungi ricordo
-        </Fab>
+        <div className={"floating-button-container"}>
+          <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
+            <Fab
+              onClick={() => setShow(true)}
+              className={"floating-button-element"}
+            >
+              <FilterListIcon />
+            </Fab>
+          </Tooltip>
+          <hr></hr>
+          <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
+            <Fab
+              onClick={() => setShow(true)}
+              className={"floating-button-element"}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+        </div>
       </VerticalTimeline>
 
       <Modal show={show} onHide={handleClose}>

@@ -64,6 +64,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-
   CREATE USER 'user'@'dockerContainerIpAddress' IDENTIFIED WITH mysql_native_password BY 'password';
   GRANT ALL PRIVILEGES ON lucreziasPresent.\* TO 'username'@'dockerContainerIpAddress';
   FLUSH PRIVILEGES;
+- allow fw access to port 3306 from dockerContainerIpAddress;
 
 ### Install automysqlbackup to backup your db
 
