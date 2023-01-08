@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
-import Modal from "react-bootstrap/Modal";
 
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
