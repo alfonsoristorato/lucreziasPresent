@@ -19,6 +19,11 @@
     justify-content: space-between;
     align-items: center;
   }
+
+  .timeline-image {
+    margin-top: 0.5rem;
+    border-radius: 0.25em;
+  }
 }
 .delete-buttons {
   display: flex;

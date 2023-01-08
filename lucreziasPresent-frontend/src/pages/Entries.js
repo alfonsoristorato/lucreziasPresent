@@ -123,7 +123,11 @@ const Entries = ({ authenticated }) => {
 
               <p>{entry.content}</p>
               {entry.file && (
-                <Image fluid src={`data:image/jpeg;base64,${entry.file}`} />
+                <Image
+                  fluid
+                  src={`data:image/jpeg;base64,${entry.file}`}
+                  className="timeline-image"
+                />
               )}
             </VerticalTimelineElement>
           );
