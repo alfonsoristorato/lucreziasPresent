@@ -33,15 +33,18 @@ https://docs.digitalocean.com/products/networking/dns/
 ### Install nginx
 
 https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04#step-5-%E2%80%93-setting-up-server-blocks-(recommended)
-nginx config for location:
-proxy_pass http://localhost:8080;
-proxy_http_version 1.1;
-proxy_set_header Upgrade $http_upgrade;
-proxy_set_header Connection keep-alive;
-proxy_set_header Host $host;
-proxy_cache_bypass $http_upgrade;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-proxy_set_header X-Forwarded-Proto $scheme;
+
+1. nginx config for location:
+   proxy_pass http://localhost:8080;
+   proxy_http_version 1.1;
+   proxy_set_header Upgrade $http_upgrade;
+   proxy_set_header Connection keep-alive;
+   proxy_set_header Host $host;
+   proxy_cache_bypass $http_upgrade;
+   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto $scheme;
+2. nginx config for server (add only, not replace all):
+   client_max_body_size 10M;
 
 ### Secure Nginx with Let's Encrypt
 
@@ -69,6 +72,9 @@ https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-
 ### Install automysqlbackup to backup your db
 
 - sudo apt-get install automysqlbackup
+- command to restore backup:
+
+1.  mysql -u root -p tableName < backup.sql
 
 ### Allow remote access to MySql (needed for docker to be able to connect)
 
