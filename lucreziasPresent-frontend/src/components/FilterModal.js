@@ -5,7 +5,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Select from "react-select";
-import { useState } from "react";
 import FormLabel from "react-bootstrap/esm/FormLabel";
 const FilterModal = ({
   show,
@@ -18,7 +17,7 @@ const FilterModal = ({
   setAuthorsSelected,
 }) => {
   return (
-    <Modal show={show == 3} onHide={handleClose}>
+    <Modal show={show === 3} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Filtra ricordi</Modal.Title>
       </Modal.Header>

@@ -92,7 +92,7 @@ const Entries = ({ authenticated }) => {
 
   useEffect(() => {
     filterEntries(entries, setFilteredEntries, dateRange, authorsSelected);
-  }, [dateRange, authorsSelected]);
+  }, [dateRange, authorsSelected, entries]);
 
   if (isLoading) {
     return <CircularProgress color="secondary" />;
