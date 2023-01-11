@@ -7,6 +7,7 @@ const AddEntryModal = ({
   editMode,
   setEntries,
   authenticated,
+  setIsLoading,
 }) => {
   return (
     <Modal show={show === 1} onHide={handleClose}>
@@ -21,6 +22,7 @@ const AddEntryModal = ({
           setEntries={setEntries}
           handleClose={handleClose}
           authenticated={authenticated}
+          setIsLoading={setIsLoading}
         />
       </Modal.Body>
     </Modal>

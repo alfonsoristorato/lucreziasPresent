@@ -71,12 +71,22 @@ const Entries = ({ authenticated }) => {
     setDeleteMode(false);
   };
   const handleDelete = () => {
-    deleteEntry(setEntries, deleteMode.id, authenticated, handleClose);
+    setIsLoading(true);
+    deleteEntry(
+      setEntries,
+      deleteMode.id,
+      authenticated,
+      handleClose,
+      setIsLoading
+    );
   };
   useEffect(() => {
-    !authenticated
-      ? navigate("/login")
-      : readEntries(setEntries, authenticated);
+    if (!authenticated) {
+      navigate("/login");
+    } else {
+      setIsLoading(true);
+      readEntries(setEntries, authenticated, setIsLoading);
+    }
   }, [authenticated, navigate]);
 
   // for filtering
@@ -196,6 +206,7 @@ const Entries = ({ authenticated }) => {
           editMode={editMode}
           setEntries={setEntries}
           authenticated={authenticated}
+          setIsLoading={setIsLoading}
         ></AddEntryModal>
 
         <DeleteEntryModal
