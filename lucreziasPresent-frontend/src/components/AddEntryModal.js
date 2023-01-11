@@ -9,7 +9,7 @@ const AddEntryModal = ({
   authenticated,
 }) => {
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show === 1} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
           {editMode ? "Modifica ricordo" : "Aggiungi ricordo"}
