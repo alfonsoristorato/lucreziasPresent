@@ -51,6 +51,8 @@ const Entries = ({ authenticated }) => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [authorsSelected, setAuthorsSelected] = useState([]);
   const [startDate, endDate] = dateRange;
+  const [width600Max, setWidth600Max] = useState(false);
+  const [width1170Min, setWidth1170Min] = useState(false);
   const navigate = useNavigate();
 
   const [icons] = useState([
@@ -65,6 +67,10 @@ const Entries = ({ authenticated }) => {
     <FaBaby />,
     <FaGrinHearts />,
   ]);
+  const handleResize = () => {
+    window.innerWidth < 600 ? setWidth600Max(true) : setWidth600Max(false);
+    window.innerWidth > 1170 ? setWidth1170Min(true) : setWidth1170Min(false);
+  };
   const handleClose = () => {
     setShow(false);
     setEditMode(false);
@@ -85,10 +91,16 @@ const Entries = ({ authenticated }) => {
       navigate("/login");
     } else {
       setIsLoading(true);
+      handleResize();
       readEntries(setEntries, authenticated, setIsLoading);
     }
   }, [authenticated, navigate]);
-
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   // for filtering
   useEffect(() => {
     setFilteredEntries(entries);
@@ -105,7 +117,14 @@ const Entries = ({ authenticated }) => {
   }, [dateRange, authorsSelected, entries]);
 
   if (isLoading) {
-    return <CircularProgress color="secondary" />;
+    return (
+      <CircularProgress
+        color="secondary"
+        className="spinner"
+        size={90}
+        thickness={2.5}
+      />
+    );
   } else {
     return (
       <Container className="entries">
@@ -179,10 +198,10 @@ const Entries = ({ authenticated }) => {
             <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
               <Fab
                 onClick={() => setShow(3)}
-                // {...(useMediaQuery("(max-width:600px)") && { size: "small" })}
-                // {...(useMediaQuery("(min-width:1170px)") && {
-                //   className: "out-of-boundary",
-                // })}
+                {...(width600Max && { size: "small" })}
+                {...(width1170Min && {
+                  className: "out-of-boundary",
+                })}
               >
                 <FilterListIcon />
               </Fab>
@@ -190,10 +209,10 @@ const Entries = ({ authenticated }) => {
             <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
               <Fab
                 onClick={() => setShow(1)}
-                // {...(useMediaQuery("(max-width:600px)") && { size: "small" })}
-                // {...(useMediaQuery("(min-width:1170px)") && {
-                //   className: "out-of-boundary",
-                // })}
+                {...(width600Max && { size: "small" })}
+                {...(width1170Min && {
+                  className: "out-of-boundary",
+                })}
               >
                 <AddIcon />
               </Fab>
