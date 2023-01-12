@@ -24,19 +24,59 @@ export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
   }
 };
 
-export const readEntries = async (setter, authenticated) => {
+export const readEntries = async (setter, authenticated, setIsLoading) => {
   try {
     const response = await callApi("entry", "GET", null, authenticated);
     setter(response);
+    setIsLoading(false);
   } catch (error) {
     throw error;
   }
 };
 
-export const addEntry = async (setter, data, authenticated, handleClose) => {
+export const addEntry = async (
+  setter,
+  data,
+  authenticated,
+  handleClose,
+  setIsLoading
+) => {
   try {
     await callApi("entry", "POST", data, authenticated);
-    await readEntries(setter, authenticated);
+    await readEntries(setter, authenticated, setIsLoading);
+    handleClose();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editEntry = async (
+  setter,
+  data,
+  id,
+  authenticated,
+  handleClose,
+  setIsLoading
+) => {
+  try {
+    await callApi(`entry/${id}`, "PATCH", data, authenticated);
+    await readEntries(setter, authenticated, setIsLoading);
+    handleClose();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteEntry = async (
+  setter,
+  id,
+  authenticated,
+  handleClose,
+  setIsLoading
+) => {
+  try {
+    await callApi(`entry/${id}`, "DELETE", null, authenticated);
+    await readEntries(setter, authenticated, setIsLoading);
     handleClose();
   } catch (error) {
     throw error;
@@ -50,31 +90,5 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
     navigate("/");
   } catch (error) {
     setAuthError(error.response.data);
-  }
-};
-
-export const editEntry = async (
-  setter,
-  data,
-  id,
-  authenticated,
-  handleClose
-) => {
-  try {
-    await callApi(`entry/${id}`, "PATCH", data, authenticated);
-    await readEntries(setter, authenticated);
-    handleClose();
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const deleteEntry = async (setter, id, authenticated, handleClose) => {
-  try {
-    await callApi(`entry/${id}`, "DELETE", null, authenticated);
-    await readEntries(setter, authenticated);
-    handleClose();
-  } catch (error) {
-    throw error;
   }
 };

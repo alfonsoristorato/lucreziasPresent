@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+
 import { useForm } from "react-hook-form";
+
 import { login } from "../utils/apiService";
-import { useNavigate } from "react-router-dom";
+
 const Login = ({ setAuthenticated }) => {
   const navigate = useNavigate();
   const [authError, setAuthError] = useState(false);
@@ -57,9 +60,7 @@ const Login = ({ setAuthenticated }) => {
                   <Button variant="primary" type="submit">
                     Login
                   </Button>
-                  {authError && (
-                    <span className="error">{authError}</span>
-                  )}
+                  {authError && <span className="error">{authError}</span>}
                 </Row>
               </Form>
             </Modal.Body>

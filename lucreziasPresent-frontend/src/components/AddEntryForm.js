@@ -1,10 +1,19 @@
 import { useState } from "react";
+
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useForm } from "react-hook-form";
-import { addEntry, editEntry } from "../utils/apiService";
 import Row from "react-bootstrap/Row";
-const AddEntryForm = ({ setEntries, editMode, handleClose, authenticated }) => {
+import { useForm } from "react-hook-form";
+
+import { addEntry, editEntry } from "../utils/apiService";
+
+const AddEntryForm = ({
+  setEntries,
+  editMode,
+  handleClose,
+  authenticated,
+  setIsLoading,
+}) => {
   const [fileTypeError, setFileTypeError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const {
@@ -29,6 +38,7 @@ const AddEntryForm = ({ setEntries, editMode, handleClose, authenticated }) => {
       }
     }
     if (validForm) {
+      setIsLoading(true);
       let formData = new FormData();
       !editMode && data.file[0] && formData.append("file", data.file[0]);
       formData.append("color", data.color);
@@ -44,9 +54,16 @@ const AddEntryForm = ({ setEntries, editMode, handleClose, authenticated }) => {
             formData,
             editMode.id,
             authenticated,
-            handleClose
+            handleClose,
+            setIsLoading
           )
-        : addEntry(setEntries, formData, authenticated, handleClose);
+        : addEntry(
+            setEntries,
+            formData,
+            authenticated,
+            handleClose,
+            setIsLoading
+          );
     }
   };
   return (

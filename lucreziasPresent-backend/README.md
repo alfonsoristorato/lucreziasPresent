@@ -33,15 +33,18 @@ https://docs.digitalocean.com/products/networking/dns/
 ### Install nginx
 
 https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04#step-5-%E2%80%93-setting-up-server-blocks-(recommended)
-nginx config for location:
-proxy_pass http://localhost:8080;
-proxy_http_version 1.1;
-proxy_set_header Upgrade $http_upgrade;
-proxy_set_header Connection keep-alive;
-proxy_set_header Host $host;
-proxy_cache_bypass $http_upgrade;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-proxy_set_header X-Forwarded-Proto $scheme;
+
+1. nginx config for location:
+   proxy_pass http://localhost:8080;
+   proxy_http_version 1.1;
+   proxy_set_header Upgrade $http_upgrade;
+   proxy_set_header Connection keep-alive;
+   proxy_set_header Host $host;
+   proxy_cache_bypass $http_upgrade;
+   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto $scheme;
+2. nginx config for server (add only, not replace all):
+   client_max_body_size 10M;
 
 ### Secure Nginx with Let's Encrypt
 
@@ -64,6 +67,15 @@ https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-
   CREATE USER 'user'@'dockerContainerIpAddress' IDENTIFIED WITH mysql_native_password BY 'password';
   GRANT ALL PRIVILEGES ON lucreziasPresent.\* TO 'username'@'dockerContainerIpAddress';
   FLUSH PRIVILEGES;
+- allow fw access to port 3306 from dockerContainerIpAddress;
+
+### Install automysqlbackup to backup your db
+
+- sudo apt-get install automysqlbackup
+- command to restore backup:
+
+1.  from unzipped: mysql -u root -p tableName < backup.sql
+2.  from zipped: gunzip < database_2016-05-20_13h31m.Friday.sql.gz | mysql -u root -p databasename
 
 ### Install automysqlbackup to backup your db
 
