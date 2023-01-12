@@ -74,7 +74,8 @@ https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-
 - sudo apt-get install automysqlbackup
 - command to restore backup:
 
-1.  mysql -u root -p tableName < backup.sql
+1.  from unzipped: mysql -u root -p tableName < backup.sql
+2. from zipped: gunzip < database_2016-05-20_13h31m.Friday.sql.gz | mysql -u root -p databasename
 
 ### Allow remote access to MySql (needed for docker to be able to connect)
 
