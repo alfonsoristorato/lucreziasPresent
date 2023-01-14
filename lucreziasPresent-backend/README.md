@@ -32,7 +32,7 @@ https://docs.digitalocean.com/products/networking/dns/
 
 ### Install nginx
 
-https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04#step-5-%E2%80%93-setting-up-server-blocks-(recommended)
+https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04
 
 1. nginx config for location:
    proxy_pass http://localhost:8080;
@@ -43,6 +43,8 @@ https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-
    proxy_cache_bypass $http_upgrade;
    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
    proxy_set_header X-Forwarded-Proto $scheme;
+   deny all;
+   allow xxx.xxx.xxx(ip address of your frontend);
 2. nginx config for server (add only, not replace all):
    client_max_body_size 10M;
 
@@ -61,27 +63,37 @@ https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-
 
 - create the db
 - as our springboot app will run in a docker container and connect to the remote MySql, we need to create a database and user like so:
-  CREATE USER 'username'@'dockerContainerIpAddress' IDENTIFIED WITH authentication_plugin BY 'password';
   CREATE DATABASE lucreziasPresent;
   USE lucreziasPresent;
-  CREATE USER 'user'@'dockerContainerIpAddress' IDENTIFIED WITH mysql_native_password BY 'password';
+  CREATE USER 'user'@'dockerContainerIpAddress(end it with rather than 1)' IDENTIFIED WITH mysql_native_password BY 'password';
   GRANT ALL PRIVILEGES ON lucreziasPresent.\* TO 'username'@'dockerContainerIpAddress';
   FLUSH PRIVILEGES;
-- allow fw access to port 3306 from dockerContainerIpAddress;
 
 ### Install automysqlbackup to backup your db
 
 - sudo apt-get install automysqlbackup
+- configuration:
+
+1. sudo nano /etc/default/automysqlbackup
+2. change DBNAME to the dbName you want to backup, else it will backup all of them
+
+- The backup files are located in /var/lib/automysqlbackup by default
+
+- command to manually run the backup (it will do it daily anyway, just for testing)
+
+1. sudo automysqlbackup
+
 - command to restore backup:
 
 1.  from unzipped: mysql -u root -p tableName < backup.sql
-2. from zipped: gunzip < database_2016-05-20_13h31m.Friday.sql.gz | mysql -u root -p databasename
+2.  from zipped: gunzip < database_2016-05-20_13h31m.Friday.sql.gz | mysql -u root -p databasename
 
 ### Allow remote access to MySql (needed for docker to be able to connect)
 
 https://www.digitalocean.com/community/tutorials/how-to-allow-remote-access-to-mysql
 
-- allow docker port and bind address to docker0
+- bind address to docker0 (and version ending with 2 too)
+- allow docker port to 3306
 
 ### Transfer your docker-compose.yml to your droplet
 
