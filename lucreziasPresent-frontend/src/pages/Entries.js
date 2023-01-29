@@ -198,47 +198,48 @@ const Entries = ({ authenticated }) => {
             );
           })}
         </VerticalTimeline>
-
-        <AppBar
-          position="fixed"
-          color="transparent"
-          sx={{ top: "auto", bottom: 0, boxShadow: "none" }}
-        >
-          <Toolbar>
-            <Tooltip
-              title={showActionIcons ? "Chiudi Icone" : "Mostra Icone"}
-              TransitionComponent={Zoom}
-            >
-              <Fab
-                onClick={() => setShowActionIcons(!showActionIcons)}
-                {...(width600Max && { size: "small" })}
+        {!show && (
+          <AppBar
+            position="fixed"
+            color="transparent"
+            sx={{ top: "auto", bottom: 0, boxShadow: "none" }}
+          >
+            <Toolbar>
+              <Tooltip
+                title={showActionIcons ? "Chiudi Icone" : "Mostra Icone"}
+                TransitionComponent={Zoom}
               >
-                {showActionIcons ? <CloseIcon /> : <MenuIcon />}
-              </Fab>
-            </Tooltip>
-            <Box sx={{ flexGrow: 1 }} />
-            {showActionIcons && (
-              <Box sx={{ flexGrow: 1 }} className="action-icons">
-                <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
-                  <Fab
-                    onClick={() => setShow(1)}
-                    {...(width600Max && { size: "small" })}
-                  >
-                    <AddIcon />
-                  </Fab>
-                </Tooltip>
-                <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
-                  <Fab
-                    onClick={() => setShow(3)}
-                    {...(width600Max && { size: "small" })}
-                  >
-                    <FilterListIcon />
-                  </Fab>
-                </Tooltip>
-              </Box>
-            )}
-          </Toolbar>
-        </AppBar>
+                <Fab
+                  onClick={() => setShowActionIcons(!showActionIcons)}
+                  {...(width600Max && { size: "small" })}
+                >
+                  {showActionIcons ? <CloseIcon /> : <MenuIcon />}
+                </Fab>
+              </Tooltip>
+              <Box sx={{ flexGrow: 1 }} />
+              {showActionIcons && (
+                <Box sx={{ flexGrow: 1 }} className="action-icons">
+                  <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
+                    <Fab
+                      onClick={() => setShow(1)}
+                      {...(width600Max && { size: "small" })}
+                    >
+                      <AddIcon />
+                    </Fab>
+                  </Tooltip>
+                  <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
+                    <Fab
+                      onClick={() => setShow(3)}
+                      {...(width600Max && { size: "small" })}
+                    >
+                      <FilterListIcon />
+                    </Fab>
+                  </Tooltip>
+                </Box>
+              )}
+            </Toolbar>
+          </AppBar>
+        )}
 
         <AddEntryModal
           show={show}
