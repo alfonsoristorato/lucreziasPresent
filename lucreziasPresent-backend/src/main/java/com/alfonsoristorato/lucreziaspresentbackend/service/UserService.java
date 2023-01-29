@@ -51,4 +51,24 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public String editUserRole(Integer userId, String newRole) throws Exception {
+        Optional<User> user = userRepository.findById((long) userId);
+        if (user.isPresent()) {
+            user.get().setRole(newRole);
+            userRepository.save(user.get());
+            return "User role updated";
+        }
+        throw new Exception("User not found");
+    }
+
+    public String editUserAttempts(Integer userId, Integer newAttempts) throws Exception {
+        Optional<User> user = userRepository.findById((long) userId);
+        if (user.isPresent()) {
+            user.get().setAttempts(newAttempts);
+            userRepository.save(user.get());
+            return "User attempts updated";
+        }
+        throw new Exception("User not found");
+    }
 }
