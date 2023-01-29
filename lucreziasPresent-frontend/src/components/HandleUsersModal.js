@@ -21,7 +21,8 @@ const HandleUsersModal = ({
       setIsLoading(true);
       getUsers(setUsers, setIsLoading, authenticated);
     }
-  }, [authenticated, setIsLoading, show]);
+    //eslint-disable-next-line
+  }, []);
   return (
     <Modal show={show === 4} onHide={handleClose}>
       <Modal.Header closeButton>
