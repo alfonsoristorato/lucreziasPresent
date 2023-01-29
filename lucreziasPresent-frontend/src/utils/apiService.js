@@ -24,10 +24,18 @@ export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
   }
 };
 
-export const readEntries = async (setter, authenticated, setIsLoading) => {
+export const getData = async (
+  setEntries,
+  authenticated,
+  setIsLoading,
+  setUsers
+) => {
   try {
     const response = await callApi("entry", "GET", null, authenticated);
-    setter(response);
+    setEntries(response);
+    if (authenticated.role === "admin") {
+      getUsers(setUsers, authenticated);
+    }
     setIsLoading(false);
   } catch (error) {
     throw error;
@@ -43,7 +51,7 @@ export const addEntry = async (
 ) => {
   try {
     await callApi("entry", "POST", data, authenticated);
-    await readEntries(setter, authenticated, setIsLoading);
+    await getData(setter, authenticated, setIsLoading);
     handleClose();
   } catch (error) {
     throw error;
@@ -60,7 +68,7 @@ export const editEntry = async (
 ) => {
   try {
     await callApi(`entry/${id}`, "PATCH", data, authenticated);
-    await readEntries(setter, authenticated, setIsLoading);
+    await getData(setter, authenticated, setIsLoading);
     handleClose();
   } catch (error) {
     throw error;
@@ -76,7 +84,7 @@ export const deleteEntry = async (
 ) => {
   try {
     await callApi(`entry/${id}`, "DELETE", null, authenticated);
-    await readEntries(setter, authenticated, setIsLoading);
+    await getData(setter, authenticated, setIsLoading);
     handleClose();
   } catch (error) {
     throw error;
@@ -93,11 +101,10 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
     setAuthError(error.response.data);
   }
 };
-export const getUsers = async (setUsers, setIsLoading, authenticated) => {
+const getUsers = async (setUsers, authenticated) => {
   try {
     const users = await callApi("user", "GET", null, authenticated);
     setUsers(users);
-    setIsLoading(false);
   } catch (error) {
     throw error;
   }

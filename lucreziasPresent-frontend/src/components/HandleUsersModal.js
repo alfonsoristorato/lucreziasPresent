@@ -1,7 +1,4 @@
 import Modal from "react-bootstrap/Modal";
-import { useState } from "react";
-import { useEffect } from "react";
-import { getUsers } from "../utils/apiService";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import Zoom from "@mui/material/Zoom";
@@ -9,20 +6,7 @@ import { Tooltip } from "@mui/material";
 
 import Table from "react-bootstrap/Table";
 
-const HandleUsersModal = ({
-  show,
-  handleClose,
-  authenticated,
-  setIsLoading,
-}) => {
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    if (show === 4) {
-      setIsLoading(true);
-      getUsers(setUsers, setIsLoading, authenticated);
-    }
-    //eslint-disable-next-line
-  }, []);
+const HandleUsersModal = ({ show, handleClose, users }) => {
   return (
     <Modal show={show === 4} onHide={handleClose}>
       <Modal.Header closeButton>

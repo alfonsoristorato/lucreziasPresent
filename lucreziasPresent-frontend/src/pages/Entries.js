@@ -40,7 +40,7 @@ import {
 } from "react-icons/fa";
 import moment from "moment";
 
-import { deleteEntry, readEntries } from "../utils/apiService";
+import { deleteEntry, getData } from "../utils/apiService";
 import AddEntryModal from "../components/AddEntryModal";
 import DeleteEntryModal from "../components/DeleteEntryModal";
 import FilterModal from "../components/FilterModal";
@@ -60,6 +60,7 @@ const Entries = ({ authenticated }) => {
   const [startDate, endDate] = dateRange;
   const [width600Max, setWidth600Max] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   const [icons] = useState([
@@ -98,7 +99,7 @@ const Entries = ({ authenticated }) => {
     } else {
       setIsLoading(true);
       handleResize();
-      readEntries(setEntries, authenticated, setIsLoading);
+      getData(setEntries, authenticated, setIsLoading, setUsers);
     }
   }, [authenticated, navigate]);
   useEffect(() => {
@@ -294,8 +295,7 @@ const Entries = ({ authenticated }) => {
         <HandleUsersModal
           show={show}
           handleClose={handleClose}
-          authenticated={authenticated}
-          setIsLoading={setIsLoading}
+          users={users}
         ></HandleUsersModal>
       </Container>
     );
