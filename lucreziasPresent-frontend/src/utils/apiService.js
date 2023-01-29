@@ -101,10 +101,46 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
     setAuthError(error.response.data);
   }
 };
+
+export const editUserAttempts = async (
+  userId,
+  currentAttempts,
+  setIsLoading,
+  setUsers,
+  authenticated
+) => {
+  setIsLoading(true);
+  await callApi(
+    `user/attempts/${userId}`,
+    "PATCH",
+    { newAttempts: currentAttempts < 4 ? 4 : 0 },
+    authenticated
+  );
+  getUsers(setUsers, authenticated);
+  setIsLoading(false);
+};
+
+export const editUserRole = async (
+  userId,
+  currentRole,
+  setIsLoading,
+  setUsers,
+  authenticated
+) => {
+  setIsLoading(true);
+  await callApi(
+    `user/role/${userId}`,
+    "PATCH",
+    { newRole: currentRole === "admin" ? "utente" : "admin" },
+    authenticated
+  );
+  getUsers(setUsers, authenticated);
+  setIsLoading(false);
+};
 const getUsers = async (setUsers, authenticated) => {
   try {
     const users = await callApi("user", "GET", null, authenticated);
-    setUsers(users);
+    setUsers(users.filter((user) => user.username !== authenticated.username));
   } catch (error) {
     throw error;
   }

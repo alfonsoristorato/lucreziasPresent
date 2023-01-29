@@ -295,6 +295,9 @@ const Entries = ({ authenticated }) => {
         <HandleUsersModal
           show={show}
           handleClose={handleClose}
+          authenticated={authenticated}
+          setIsLoading={setIsLoading}
+          setUsers={setUsers}
           users={users}
         ></HandleUsersModal>
       </Container>
