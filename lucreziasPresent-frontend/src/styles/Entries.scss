@@ -6,7 +6,7 @@
     float: right;
     display: flex;
     flex-direction: column;
-    :last-child {
+    .MuiButtonBase-root {
       margin-top: 1rem;
     }
   }

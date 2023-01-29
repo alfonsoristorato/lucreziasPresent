@@ -6,7 +6,9 @@ import Image from "react-bootstrap/Image";
 
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import MenuIcon from "@mui/icons-material/Menu";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Zoom from "@mui/material/Zoom";
@@ -53,6 +55,7 @@ const Entries = ({ authenticated }) => {
   const [startDate, endDate] = dateRange;
   const [width600Max, setWidth600Max] = useState(false);
   const [width1170Min, setWidth1170Min] = useState(false);
+  const [showActionIcons, setShowActionIcons] = useState(false);
   const navigate = useNavigate();
 
   const [icons] = useState([
@@ -195,26 +198,44 @@ const Entries = ({ authenticated }) => {
             );
           })}
           <div className={"floating-button-container"}>
-            <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
+            {showActionIcons && (
+              <>
+                <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
+                  <Fab
+                    onClick={() => setShow(3)}
+                    {...(width600Max && { size: "small" })}
+                    {...(width1170Min && {
+                      className: "out-of-boundary",
+                    })}
+                  >
+                    <FilterListIcon />
+                  </Fab>
+                </Tooltip>
+                <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
+                  <Fab
+                    onClick={() => setShow(1)}
+                    {...(width600Max && { size: "small" })}
+                    {...(width1170Min && {
+                      className: "out-of-boundary",
+                    })}
+                  >
+                    <AddIcon />
+                  </Fab>
+                </Tooltip>
+              </>
+            )}
+            <Tooltip
+              title={showActionIcons ? "Chiudi Icone" : "Mostra Icone"}
+              TransitionComponent={Zoom}
+            >
               <Fab
-                onClick={() => setShow(3)}
+                onClick={() => setShowActionIcons(!showActionIcons)}
                 {...(width600Max && { size: "small" })}
                 {...(width1170Min && {
                   className: "out-of-boundary",
                 })}
               >
-                <FilterListIcon />
-              </Fab>
-            </Tooltip>
-            <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
-              <Fab
-                onClick={() => setShow(1)}
-                {...(width600Max && { size: "small" })}
-                {...(width1170Min && {
-                  className: "out-of-boundary",
-                })}
-              >
-                <AddIcon />
+                {showActionIcons ? <CloseIcon /> : <MenuIcon />}
               </Fab>
             </Tooltip>
           </div>
