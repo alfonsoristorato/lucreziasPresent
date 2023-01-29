@@ -1,16 +1,8 @@
 .entries {
-  .floating-button-container {
+  .action-icons {
     display: flex;
-    flex-direction: column;
-    .MuiButtonBase-root {
-      margin-top: 1rem;
-    }
+    justify-content: space-between;
   }
-
-  // .out-of-boundary {
-  //   margin-right: -5rem;
-  // }
-
   .content {
     white-space: pre-line;
   }
