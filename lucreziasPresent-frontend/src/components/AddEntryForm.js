@@ -42,11 +42,11 @@ const AddEntryForm = ({
       let formData = new FormData();
       !editMode && data.file[0] && formData.append("file", data.file[0]);
       formData.append("color", data.color);
-      formData.append("content", data.content);
+      formData.append("content", data.content.trim());
       formData.append("date", data.date);
       !editMode && formData.append("icon", Math.floor(Math.random() * 10));
-      formData.append("name", data.name);
-      formData.append("title", data.title);
+      formData.append("name", data.name.trim());
+      formData.append("title", data.title.trim());
 
       editMode
         ? editEntry(

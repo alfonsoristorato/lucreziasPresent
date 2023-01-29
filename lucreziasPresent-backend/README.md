@@ -47,7 +47,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-
    allow xxx.xxx.xxx(ip address of your frontend);
 2. nginx config for server (add only, not replace all):
    client_max_body_size 10M;
-3. for default site, add in location@
+3. for default site, add in location:
    deny all;
 
 ### Secure Nginx with Let's Encrypt
