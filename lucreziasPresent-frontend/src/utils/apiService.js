@@ -85,10 +85,20 @@ export const deleteEntry = async (
 
 export const login = async (setAuthenticated, setAuthError, data, navigate) => {
   try {
-    await callApi("login", "POST", data);
+    const role = await callApi("login", "POST", data);
+    data.role = role;
     setAuthenticated(data);
     navigate("/");
   } catch (error) {
     setAuthError(error.response.data);
+  }
+};
+export const getUsers = async (setUsers, setIsLoading, authenticated) => {
+  try {
+    const users = await callApi("user", "GET", null, authenticated);
+    setUsers(users);
+    setIsLoading(false);
+  } catch (error) {
+    throw error;
   }
 };

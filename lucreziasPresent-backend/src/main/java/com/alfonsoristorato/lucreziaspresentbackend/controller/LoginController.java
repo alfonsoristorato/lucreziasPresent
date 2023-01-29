@@ -25,7 +25,7 @@ public class LoginController {
         Optional<User> userOptional = userService.validUsernameAndPassword(loginRequest.getUsername(),
                 loginRequest.getPassword());
         if (userOptional.isPresent()) {
-            return new ResponseEntity<>("Logged in", HttpStatus.OK);
+            return new ResponseEntity<>(userOptional.get().getRole(), HttpStatus.OK);
         }
         return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }

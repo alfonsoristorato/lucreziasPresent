@@ -6,6 +6,8 @@ import Image from "react-bootstrap/Image";
 
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import PasswordIcon from "@mui/icons-material/Password";
+import PeopleIcon from "@mui/icons-material/People";
 import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -43,6 +45,7 @@ import AddEntryModal from "../components/AddEntryModal";
 import DeleteEntryModal from "../components/DeleteEntryModal";
 import FilterModal from "../components/FilterModal";
 import { filterEntries } from "../utils/utils";
+import HandleUsersModal from "../components/HandleUsersModal";
 
 const Entries = ({ authenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -216,7 +219,19 @@ const Entries = ({ authenticated }) => {
                   {showActionIcons ? <CloseIcon /> : <MenuIcon />}
                 </Fab>
               </Tooltip>
-              <Box sx={{ flexGrow: 1 }} />
+
+              <Box sx={{ flexGrow: 1 }} className="admin-icons">
+                {authenticated.role === "admin" && showActionIcons && (
+                  <Tooltip title="Gestisci utenti" TransitionComponent={Zoom}>
+                    <Fab
+                      onClick={() => setShow(4)}
+                      {...(width600Max && { size: "small" })}
+                    >
+                      <PeopleIcon />
+                    </Fab>
+                  </Tooltip>
+                )}
+              </Box>
               {showActionIcons && (
                 <Box sx={{ flexGrow: 1 }} className="action-icons">
                   <Tooltip title="Aggiungi ricordo" TransitionComponent={Zoom}>
@@ -225,6 +240,14 @@ const Entries = ({ authenticated }) => {
                       {...(width600Max && { size: "small" })}
                     >
                       <AddIcon />
+                    </Fab>
+                  </Tooltip>
+                  <Tooltip title="Cambia Password" TransitionComponent={Zoom}>
+                    <Fab
+                      // onClick={() => setShow(1)}
+                      {...(width600Max && { size: "small" })}
+                    >
+                      <PasswordIcon />
                     </Fab>
                   </Tooltip>
                   <Tooltip title="Filtra ricordi" TransitionComponent={Zoom}>
@@ -267,6 +290,13 @@ const Entries = ({ authenticated }) => {
           authorsSelected={authorsSelected}
           setAuthorsSelected={setAuthorsSelected}
         ></FilterModal>
+
+        <HandleUsersModal
+          show={show}
+          handleClose={handleClose}
+          authenticated={authenticated}
+          setIsLoading={setIsLoading}
+        ></HandleUsersModal>
       </Container>
     );
   }
