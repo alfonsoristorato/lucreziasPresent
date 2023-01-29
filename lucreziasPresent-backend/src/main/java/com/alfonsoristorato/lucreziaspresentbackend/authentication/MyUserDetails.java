@@ -6,10 +6,10 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 @Data
 @Getter
 public class MyUserDetails implements UserDetails {
@@ -22,9 +22,7 @@ public class MyUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        // authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
-
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
         return authorities;
     }
 
@@ -58,6 +56,5 @@ public class MyUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 
 }

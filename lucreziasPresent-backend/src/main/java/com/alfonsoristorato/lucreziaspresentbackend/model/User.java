@@ -1,5 +1,7 @@
 package com.alfonsoristorato.lucreziaspresentbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +16,10 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String username;
-
+    @JsonIgnore
     private String password;
+
+    private String role;
 
     private int attempts;
 }
