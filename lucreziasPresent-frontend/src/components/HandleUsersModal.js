@@ -21,8 +21,7 @@ const HandleUsersModal = ({
       setIsLoading(true);
       getUsers(setUsers, setIsLoading, authenticated);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authenticated, setIsLoading, show]);
   return (
     <Modal show={show === 4} onHide={handleClose}>
       <Modal.Header closeButton>
