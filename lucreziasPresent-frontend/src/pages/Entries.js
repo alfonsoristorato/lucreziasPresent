@@ -56,7 +56,7 @@ const Entries = ({ authenticated }) => {
   const [authorsSelected, setAuthorsSelected] = useState([]);
   const [startDate, endDate] = dateRange;
   const [width600Max, setWidth600Max] = useState(false);
-  const [width1170Min, setWidth1170Min] = useState(false);
+  // const [width1170Min, setWidth1170Min] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
   const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ const Entries = ({ authenticated }) => {
   ]);
   const handleResize = () => {
     window.innerWidth < 600 ? setWidth600Max(true) : setWidth600Max(false);
-    window.innerWidth > 1170 ? setWidth1170Min(true) : setWidth1170Min(false);
+    // window.innerWidth > 1170 ? setWidth1170Min(true) : setWidth1170Min(false);
   };
   const handleClose = () => {
     setShow(false);
