@@ -124,7 +124,9 @@ const HandleUsersModal = ({
         <Form.Group className="mb-3 add-user">
           <Form.Control
             placeholder="Nome Utente"
-            onChange={(e) => setNewUserName(e.target.value)}
+            onChange={(e) =>
+              setNewUserName(e.target.value.toLowerCase().trim())
+            }
           />
           <Button
             style={{ width: "100%" }}
