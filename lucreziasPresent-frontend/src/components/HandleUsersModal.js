@@ -6,7 +6,10 @@ import { Tooltip } from "@mui/material";
 import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import RemoveModeratorIcon from "@mui/icons-material/RemoveModerator";
 import Table from "react-bootstrap/Table";
-import { editUserAttempts, editUserRole } from "../utils/apiService";
+import { addUser, editUserAttempts, editUserRole } from "../utils/apiService";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { useState } from "react";
 
 const HandleUsersModal = ({
   show,
@@ -16,6 +19,7 @@ const HandleUsersModal = ({
   setUsers,
   authenticated,
 }) => {
+  const [newUserName, setNewUserName] = useState("");
   return (
     <Modal show={show === 4} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -117,7 +121,31 @@ const HandleUsersModal = ({
             })}
           </tbody>
         </Table>
+        <Form.Group className="mb-3 add-user">
+          <Form.Control
+            placeholder="Nome Utente"
+            onChange={(e) => setNewUserName(e.target.value)}
+          />
+          <Button
+            style={{ width: "100%" }}
+            {...((users.some((user) => user.username === newUserName) ||
+              newUserName === authenticated.username ||
+              !newUserName) && {
+              disabled: true,
+            })}
+            onClick={() =>
+              addUser(newUserName, setIsLoading, setUsers, authenticated)
+            }
+          >
+            Aggiungi utente
+          </Button>
+        </Form.Group>
       </Modal.Body>
+      <div className="delete-buttons">
+        <Button variant="secondary" className="mb-2 mx-2" onClick={handleClose}>
+          Chiudi
+        </Button>
+      </div>
     </Modal>
   );
 };

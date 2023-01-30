@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -70,5 +71,15 @@ public class UserService {
             return "User attempts updated";
         }
         throw new Exception("User not found");
+    }
+
+    public String addUser(Map<String, String> requestBody) {
+        User newUser = new User();
+        newUser.setUsername(requestBody.get("username"));
+        newUser.setPassword(passwordEncoder.encode(requestBody.get("password")));
+        newUser.setAttempts(0);
+        newUser.setRole("utente");
+        userRepository.save(newUser);
+        return "User added";
     }
 }

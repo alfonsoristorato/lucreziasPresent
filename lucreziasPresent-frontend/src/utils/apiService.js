@@ -137,6 +137,30 @@ export const editUserRole = async (
   getUsers(setUsers, authenticated);
   setIsLoading(false);
 };
+
+export const addUser = async (
+  newUserName,
+  setIsLoading,
+  setUsers,
+  authenticated
+) => {
+  try {
+    setIsLoading(true);
+    await callApi(
+      "user",
+      "POST",
+      {
+        username: newUserName,
+        password: process.env.REACT_APP_DEFAULT_PASSWORD,
+      },
+      authenticated
+    );
+    getUsers(setUsers, authenticated);
+    setIsLoading(false);
+  } catch (error) {
+    throw error;
+  }
+};
 const getUsers = async (setUsers, authenticated) => {
   try {
     const users = await callApi("user", "GET", null, authenticated);
