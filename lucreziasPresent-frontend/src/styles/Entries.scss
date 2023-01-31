@@ -68,8 +68,18 @@
 .spinner {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 40%;
 }
 .add-user {
   display: flex;
+}
+.handleUserModal-modal-body {
+  min-height: 25rem;
+}
+.td-flex {
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

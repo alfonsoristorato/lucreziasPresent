@@ -142,7 +142,9 @@ export const addUser = async (
   newUserName,
   setIsLoading,
   setUsers,
-  authenticated
+  authenticated,
+  setNewUserMessage,
+  setNewUserName
 ) => {
   try {
     setIsLoading(true);
@@ -156,6 +158,11 @@ export const addUser = async (
       authenticated
     );
     getUsers(setUsers, authenticated);
+
+    setNewUserMessage(
+      `Utente ${newUserName} aggiunto, la password è: ${process.env.REACT_APP_DEFAULT_PASSWORD}`
+    );
+    setNewUserName("");
     setIsLoading(false);
   } catch (error) {
     throw error;

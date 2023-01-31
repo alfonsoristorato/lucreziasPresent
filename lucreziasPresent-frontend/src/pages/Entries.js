@@ -128,7 +128,7 @@ const Entries = ({ authenticated }) => {
       <CircularProgress
         color="secondary"
         className="spinner"
-        size={90}
+        size={100}
         thickness={2.5}
       />
     );
@@ -296,7 +296,6 @@ const Entries = ({ authenticated }) => {
           show={show}
           handleClose={handleClose}
           authenticated={authenticated}
-          setIsLoading={setIsLoading}
           setUsers={setUsers}
           users={users}
         ></HandleUsersModal>
