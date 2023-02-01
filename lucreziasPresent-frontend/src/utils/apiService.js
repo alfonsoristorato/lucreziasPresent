@@ -93,9 +93,10 @@ export const deleteEntry = async (
 
 export const login = async (setAuthenticated, setAuthError, data, navigate) => {
   try {
-    const role = await callApi("login", "POST", data);
-    data.role = role;
-    setAuthenticated(data);
+    const user = await callApi("login", "POST", data);
+    user.password = data.password;
+    setAuthenticated(user);
+    console.log(user);
     navigate("/");
   } catch (error) {
     setAuthError(error.response.data);
@@ -153,7 +154,6 @@ export const addUser = async (
       "POST",
       {
         username: newUserName,
-        password: process.env.REACT_APP_DEFAULT_PASSWORD,
       },
       authenticated
     );

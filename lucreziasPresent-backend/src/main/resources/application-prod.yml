@@ -1,24 +1,5 @@
-web:
-  cors:
-    allowed-origins: ${env.ALLOWED_ORIGINS_PROD}
-    allowed-methods: "GET, POST, PATCH, DELETE, OPTIONS"
 spring:
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
     url: ${env.DB_URL_PROD}
     username: ${env.MYSQL_USERNAME_PROD}
     password: ${env.MYSQL_PASSWORD_PROD}
-  servlet:
-    multipart:
-      max-file-size: 15MB
-      max-request-size: 15MB
-  jpa:
-    hibernate.ddl-auto: update
-    generate-ddl: true
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-server:
-  compression:
-    enabled: "true"

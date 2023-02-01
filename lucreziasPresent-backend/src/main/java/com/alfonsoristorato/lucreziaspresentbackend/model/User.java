@@ -22,4 +22,7 @@ public class User {
     private String role;
 
     private int attempts;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean firstLogin;
 }

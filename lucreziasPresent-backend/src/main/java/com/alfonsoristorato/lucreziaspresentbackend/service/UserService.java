@@ -3,7 +3,9 @@ package com.alfonsoristorato.lucreziaspresentbackend.service;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
 import lombok.SneakyThrows;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,11 @@ public class UserService {
     @Autowired
     private UserDetailsService myUserDetails;
 
+    @Value("${app.default-password}")
+    private String defaultPassword;
+
     public Optional<User> getUserByUsername(String username) {
-        return Optional.of(userRepository.findByUsername(username));
+        return userRepository.findByUsername(username);
     }
 
     @SneakyThrows
@@ -76,9 +81,10 @@ public class UserService {
     public String addUser(Map<String, String> requestBody) {
         User newUser = new User();
         newUser.setUsername(requestBody.get("username"));
-        newUser.setPassword(passwordEncoder.encode(requestBody.get("password")));
+        newUser.setPassword(passwordEncoder.encode(defaultPassword));
         newUser.setAttempts(0);
         newUser.setRole("utente");
+        newUser.setFirstLogin(true);
         userRepository.save(newUser);
         return "User added";
     }

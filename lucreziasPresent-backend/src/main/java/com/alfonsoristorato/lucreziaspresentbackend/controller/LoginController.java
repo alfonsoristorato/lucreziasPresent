@@ -21,12 +21,12 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        Optional<User> userOptional = userService.validUsernameAndPassword(loginRequest.getUsername(),
+    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) throws Exception {
+        Optional<User> authenticated = userService.validUsernameAndPassword(loginRequest.getUsername(),
                 loginRequest.getPassword());
-        if (userOptional.isPresent()) {
-            return new ResponseEntity<>(userOptional.get().getRole(), HttpStatus.OK);
+        if (authenticated.isPresent()) {
+            return new ResponseEntity<>(authenticated.get(), HttpStatus.OK);
         }
-        return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(authenticated.get(), HttpStatus.UNAUTHORIZED);
     }
 }

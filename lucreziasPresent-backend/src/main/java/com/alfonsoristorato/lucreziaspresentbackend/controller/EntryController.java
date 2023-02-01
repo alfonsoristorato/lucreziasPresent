@@ -39,6 +39,7 @@ public class EntryController {
             throws IOException {
         return new ResponseEntity<>(entryService.editEntry(entry, entryId, user), HttpStatus.CREATED);
     }
+
     @SneakyThrows
     @DeleteMapping("/{entryId}")
     public ResponseEntity<String> deleteEntry(
