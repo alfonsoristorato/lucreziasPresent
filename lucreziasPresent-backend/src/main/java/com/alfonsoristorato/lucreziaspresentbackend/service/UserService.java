@@ -71,16 +71,27 @@ public class UserService {
                     user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
                     user.get().setFirstLogin(false);
                     userRepository.save(user.get());
-                    return "Password Cambiata";
+                    return "Password Cambiata.";
                 }
             } else {
                 String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrenght
-                        + ", riprova e assicurati che sia più sicura.";
+                        + ". Riprova e assicurati che sia più sicura.";
                 throw new Exception(excpetionMessage);
             }
         } else {
             throw new Exception("No such user found.");
         }
+    }
+
+    public String resetUserPassword(Integer userId) throws Exception {
+        Optional<User> user = userRepository.findById((long) userId);
+        if (user.isPresent()) {
+            user.get().setPassword(passwordEncoder.encode(defaultPassword));
+            user.get().setFirstLogin(true);
+            userRepository.save(user.get());
+            return "Password Reset";
+        }
+        throw new Exception("User not found");
     }
 
     public List<User> getAllUsers() {
@@ -143,9 +154,9 @@ public class UserService {
             return "Strong";
         else if ((hasLower || hasUpper || specialCharInstances.size() < 2)
                 && (n >= 6))
-            return "Media";
+            return "'Media'";
         else
-            return "Debole";
+            return "'Debole'";
     }
 
 }

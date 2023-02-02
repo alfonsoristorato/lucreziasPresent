@@ -19,7 +19,7 @@ import com.alfonsoristorato.lucreziaspresentbackend.service.UserService;
 
 @Controller
 @RequestMapping(path = "/user")
-@PreAuthorize("hasAuthority('admin')")
+@PreAuthorize("hasAuthority('admin') && principal.user.firstLogin == false")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -49,5 +49,11 @@ public class UserController {
             @RequestBody Map<String, String> requestBody)
             throws Exception {
         return new ResponseEntity<>(userService.addUser(requestBody), HttpStatus.OK);
+    }
+
+    @PatchMapping("/password/{userId}")
+    public ResponseEntity<String> resetUserPassword(@PathVariable Integer userId)
+            throws Exception {
+        return new ResponseEntity<>(userService.resetUserPassword(userId), HttpStatus.OK);
     }
 }
