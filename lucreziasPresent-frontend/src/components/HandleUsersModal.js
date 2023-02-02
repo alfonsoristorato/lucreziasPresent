@@ -13,7 +13,12 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-import { addUser, editUserAttempts, editUserRole } from "../utils/apiService";
+import {
+  addUser,
+  editUserAttempts,
+  editUserRole,
+  resetUserPassword,
+} from "../utils/apiService";
 
 const HandleUsersModal = ({
   show,
@@ -156,15 +161,14 @@ const HandleUsersModal = ({
                           <PasswordIcon
                             role="button"
                             color={"primary"}
-                            // onClick={() =>
-                            //   editUserRole(
-                            //     user.id,
-                            //     user.role,
-                            //     setIsLoading,
-                            //     setUsers,
-                            //     authenticated
-                            //   )
-                            // }
+                            onClick={() =>
+                              resetUserPassword(
+                                user.id,
+                                setIsLoading,
+                                setUsers,
+                                authenticated
+                              )
+                            }
                           />
                         </Tooltip>
                       </td>

@@ -41,3 +41,7 @@
   color: red;
   font-size: small;
 }
+.new-password-subtitle {
+  font-size: smaller;
+  margin-bottom: 0;
+}

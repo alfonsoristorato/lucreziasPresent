@@ -65,7 +65,13 @@ const ChangePassword = ({ authenticated }) => {
                   className="mb-3"
                   controlId="formBasicChangePassword"
                 >
-                  <Form.Label>Nuova Password</Form.Label>
+                  <Form.Label>
+                    Nuova Password
+                    <p className="new-password-subtitle">
+                      Deve avere almeno una lettera grande e due caratteri
+                      speciali.
+                    </p>
+                  </Form.Label>
                   <Form.Control
                     type="password"
                     placeholder="Nuova Password"

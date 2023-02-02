@@ -198,6 +198,19 @@ export const addUser = async (
     throw error;
   }
 };
+
+export const resetUserPassword = async (
+  userId,
+  setIsLoading,
+  setUsers,
+  authenticated
+) => {
+  setIsLoading(true);
+  await callApi(`user/password/${userId}`, "PATCH", null, authenticated);
+  getUsers(setUsers, authenticated);
+  setIsLoading(false);
+};
+
 const getUsers = async (setUsers, authenticated) => {
   try {
     const users = await callApi("user", "GET", null, authenticated);
