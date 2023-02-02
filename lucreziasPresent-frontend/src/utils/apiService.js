@@ -96,10 +96,40 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
     const user = await callApi("login", "POST", data);
     user.password = data.password;
     setAuthenticated(user);
-    console.log(user);
-    navigate("/");
+    if (user.firstLogin === true) {
+      navigate("/change-password");
+    } else {
+      navigate("/");
+    }
   } catch (error) {
     setAuthError(error.response.data);
+  }
+};
+
+export const changePassword = async (
+  authenticated,
+  data,
+  setPasswordChangeRequested
+) => {
+  setPasswordChangeRequested(false);
+  if (data.newPassword === data.newPasswordRepeated) {
+    try {
+      data.username = authenticated.username;
+      delete data.newPasswordRepeated;
+      const passwordChange = await callApi(
+        "change-password",
+        "POST",
+        data,
+        authenticated
+      );
+      setPasswordChangeRequested(passwordChange);
+    } catch (error) {
+      setPasswordChangeRequested(error.response.data);
+    }
+  } else {
+    setPasswordChangeRequested(
+      "Assicurati di aver ripetuto la nuova password."
+    );
   }
 };
 

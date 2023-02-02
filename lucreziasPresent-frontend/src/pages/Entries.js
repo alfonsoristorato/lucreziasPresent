@@ -97,9 +97,13 @@ const Entries = ({ authenticated }) => {
     if (!authenticated) {
       navigate("/login");
     } else {
-      setIsLoading(true);
-      handleResize();
-      getData(setEntries, authenticated, setIsLoading, setUsers);
+      if (authenticated.firstLogin) {
+        navigate("/change-password");
+      } else {
+        setIsLoading(true);
+        handleResize();
+        getData(setEntries, authenticated, setIsLoading, setUsers);
+      }
     }
   }, [authenticated, navigate]);
   useEffect(() => {
@@ -245,7 +249,7 @@ const Entries = ({ authenticated }) => {
                   </Tooltip>
                   <Tooltip title="Cambia Password" TransitionComponent={Zoom}>
                     <Fab
-                      // onClick={() => setShow(1)}
+                      onClick={() => navigate("/change-password")}
                       {...(width600Max && { size: "small" })}
                     >
                       <PasswordIcon />

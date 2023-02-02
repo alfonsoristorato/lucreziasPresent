@@ -5,6 +5,7 @@ import { useState } from "react";
 import Login from "./pages/Login";
 import Entries from "./pages/Entries";
 import "./styles/main.scss";
+import ChangePassword from "./pages/ChangePassword";
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -15,14 +16,13 @@ const App = () => {
         {!authenticated && (
           <Route
             path="/login"
-            element={
-              <Login
-                authenticated={authenticated}
-                setAuthenticated={setAuthenticated}
-              />
-            }
+            element={<Login setAuthenticated={setAuthenticated} />}
           ></Route>
         )}
+        <Route
+          path="/change-password"
+          element={<ChangePassword authenticated={authenticated} />}
+        ></Route>
         <Route
           path="/"
           element={<Entries authenticated={authenticated} />}
