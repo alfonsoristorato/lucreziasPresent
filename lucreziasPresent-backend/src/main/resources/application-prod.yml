@@ -1,5 +1,9 @@
+web:
+  cors:
+    allowed-origins: ${env.ALLOWED_ORIGINS_PROD}
 spring:
   datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: ${env.DB_URL_PROD}
     username: ${env.MYSQL_USERNAME_PROD}
     password: ${env.MYSQL_PASSWORD_PROD}
