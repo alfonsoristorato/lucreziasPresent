@@ -1,6 +1,7 @@
 package com.alfonsoristorato.lucreziaspresentbackend.controller;
 
 import com.alfonsoristorato.lucreziaspresentbackend.model.LoginRequest;
+import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequest;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,22 +12,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Optional;
-
 @Controller
-@RequestMapping(path = "/login")
-public class LoginController {
+@RequestMapping
+public class CredentialsController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) throws Exception {
-        Optional<User> authenticated = userService.validUsernameAndPassword(loginRequest.getUsername(),
-                loginRequest.getPassword());
-        if (authenticated.isPresent()) {
-            return new ResponseEntity<>(authenticated.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(authenticated.get(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(userService.validUsernameAndPassword(loginRequest.getUsername(),
+                loginRequest.getPassword()).get(), HttpStatus.OK);
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequest passwordChangeRequest)
+            throws Exception {
+        return new ResponseEntity<>(userService.changePassword(passwordChangeRequest),
+                HttpStatus.OK);
+    }
+
 }

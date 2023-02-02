@@ -1,5 +1,6 @@
 package com.alfonsoristorato.lucreziaspresentbackend.service;
 
+import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequest;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
 import lombok.SneakyThrows;
@@ -10,9 +11,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -54,6 +59,26 @@ public class UserService {
         throw new Exception("Credenziali non riconosciute.");
     }
 
+    public String changePassword(PasswordChangeRequest passwordChangeRequest) throws Exception {
+        Optional<User> user = validUsernameAndPassword(passwordChangeRequest.getUsername(),
+                passwordChangeRequest.getPassword());
+        if (user.isPresent()) {
+            String newPasswordStrenght = passwordStrenght(passwordChangeRequest.getNewPassword());
+            if (newPasswordStrenght.equals("Strong")) {
+                user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+                user.get().setFirstLogin(false);
+                userRepository.save(user.get());
+                return "Password Cambiata";
+            } else {
+                String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrenght
+                        + ", riprova e assicurati che sia più sicura.";
+                throw new Exception(excpetionMessage);
+            }
+        } else {
+            throw new Exception("No such user found.");
+        }
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -88,4 +113,35 @@ public class UserService {
         userRepository.save(newUser);
         return "User added";
     }
+
+    private String passwordStrenght(String newPassword) {
+        // Checking lower alphabet in string
+        int n = newPassword.length();
+        boolean hasLower = false, hasUpper = false,
+                hasDigit = false;
+        List<Boolean> specialCharInstances = new ArrayList<>();
+        Set<Character> set = new HashSet<Character>(
+                Arrays.asList('!', '@', '#', '$', '%', '^', '&',
+                        '*', '(', ')', '-', '+'));
+        for (char i : newPassword.toCharArray()) {
+            if (Character.isLowerCase(i))
+                hasLower = true;
+            if (Character.isUpperCase(i))
+                hasUpper = true;
+            if (Character.isDigit(i))
+                hasDigit = true;
+            if (set.contains(i))
+                specialCharInstances.add(true);
+        }
+
+        if (hasDigit && hasLower && hasUpper && specialCharInstances.size() > 1
+                && (n >= 8))
+            return "Strong";
+        else if ((hasLower || hasUpper || specialCharInstances.size() < 2)
+                && (n >= 6))
+            return "Media";
+        else
+            return "Debole";
+    }
+
 }
