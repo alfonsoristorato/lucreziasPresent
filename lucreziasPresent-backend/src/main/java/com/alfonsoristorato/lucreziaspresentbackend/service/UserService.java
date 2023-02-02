@@ -65,10 +65,14 @@ public class UserService {
         if (user.isPresent()) {
             String newPasswordStrenght = passwordStrenght(passwordChangeRequest.getNewPassword());
             if (newPasswordStrenght.equals("Strong")) {
-                user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
-                user.get().setFirstLogin(false);
-                userRepository.save(user.get());
-                return "Password Cambiata";
+                if (passwordEncoder.matches(passwordChangeRequest.getNewPassword(), user.get().getPassword())) {
+                    throw new Exception("La nuova password deve essere diversa dalla vecchia.");
+                } else {
+                    user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+                    user.get().setFirstLogin(false);
+                    userRepository.save(user.get());
+                    return "Password Cambiata";
+                }
             } else {
                 String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrenght
                         + ", riprova e assicurati che sia più sicura.";
