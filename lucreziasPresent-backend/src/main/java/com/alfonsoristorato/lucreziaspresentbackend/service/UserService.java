@@ -133,7 +133,7 @@ public class UserService {
         int n = newPassword.length();
         boolean hasLower = false, hasUpper = false,
                 hasDigit = false;
-        List<Boolean> specialCharInstances = new ArrayList<>();
+        Set<Character> specialCharactersUser = new HashSet<>();
         Set<Character> set = new HashSet<Character>(
                 Arrays.asList('!', '@', '#', '$', '%', '^', '&',
                         '*', '(', ')', '-', '+'));
@@ -145,13 +145,13 @@ public class UserService {
             if (Character.isDigit(i))
                 hasDigit = true;
             if (set.contains(i))
-                specialCharInstances.add(true);
+                specialCharactersUser.add(i);
         }
 
-        if (hasDigit && hasLower && hasUpper && specialCharInstances.size() > 1
+        if (hasDigit && hasLower && hasUpper && specialCharactersUser.size() > 1
                 && (n >= 8))
             return "Strong";
-        else if ((hasLower || hasUpper || specialCharInstances.size() < 2)
+        else if ((hasLower || hasUpper || specialCharactersUser.size() < 2)
                 && (n >= 6))
             return "'Media'";
         else
