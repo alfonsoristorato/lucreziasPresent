@@ -164,9 +164,11 @@ const HandleUsersModal = ({
                             onClick={() =>
                               resetUserPassword(
                                 user.id,
+                                user.username,
                                 setIsLoading,
                                 setUsers,
-                                authenticated
+                                authenticated,
+                                setNewUserMessage
                               )
                             }
                           />

@@ -51,7 +51,7 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(requestBody), HttpStatus.OK);
     }
 
-    @PatchMapping("/password/{userId}")
+    @PatchMapping("/reset-password/{userId}")
     public ResponseEntity<String> resetUserPassword(@PathVariable Integer userId)
             throws Exception {
         return new ResponseEntity<>(userService.resetUserPassword(userId), HttpStatus.OK);

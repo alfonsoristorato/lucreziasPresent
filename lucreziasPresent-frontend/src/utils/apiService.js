@@ -179,7 +179,7 @@ export const addUser = async (
 ) => {
   try {
     setIsLoading(true);
-    await callApi(
+    const newPassword = await callApi(
       "user",
       "POST",
       {
@@ -190,7 +190,7 @@ export const addUser = async (
     getUsers(setUsers, authenticated);
 
     setNewUserMessage(
-      `Utente ${newUserName} aggiunto, la password è: ${process.env.REACT_APP_DEFAULT_PASSWORD}`
+      `Utente ${newUserName} aggiunto, la password temporanea è: ${newPassword}`
     );
     setNewUserName("");
     setIsLoading(false);
@@ -201,13 +201,23 @@ export const addUser = async (
 
 export const resetUserPassword = async (
   userId,
+  username,
   setIsLoading,
   setUsers,
-  authenticated
+  authenticated,
+  setNewUserMessage
 ) => {
   setIsLoading(true);
-  await callApi(`user/password/${userId}`, "PATCH", null, authenticated);
+  const newPassword = await callApi(
+    `user/reset-password/${userId}`,
+    "PATCH",
+    null,
+    authenticated
+  );
   getUsers(setUsers, authenticated);
+  setNewUserMessage(
+    `Password per ${username} cambiata, la password temporanea è: ${newPassword}`
+  );
   setIsLoading(false);
 };
 

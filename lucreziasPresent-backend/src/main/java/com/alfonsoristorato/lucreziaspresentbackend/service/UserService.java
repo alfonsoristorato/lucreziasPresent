@@ -4,7 +4,7 @@ import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequest;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
 import lombok.SneakyThrows;
-
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -29,9 +31,6 @@ public class UserService {
 
     @Autowired
     private UserDetailsService myUserDetails;
-
-    @Value("${app.default-password}")
-    private String defaultPassword;
 
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -83,12 +82,13 @@ public class UserService {
     }
 
     public String resetUserPassword(Integer userId) throws Exception {
+        String randomPassword = generateRandomFirstPassword();
         Optional<User> user = userRepository.findById((long) userId);
         if (user.isPresent()) {
-            user.get().setPassword(passwordEncoder.encode(defaultPassword));
+            user.get().setPassword(passwordEncoder.encode(randomPassword));
             user.get().setFirstLogin(true);
             userRepository.save(user.get());
-            return "Password Reset";
+            return randomPassword;
         }
         throw new Exception("User not found");
     }
@@ -118,14 +118,15 @@ public class UserService {
     }
 
     public String addUser(Map<String, String> requestBody) {
+        String randomPassword = generateRandomFirstPassword();
         User newUser = new User();
         newUser.setUsername(requestBody.get("username"));
-        newUser.setPassword(passwordEncoder.encode(defaultPassword));
+        newUser.setPassword(passwordEncoder.encode(randomPassword));
         newUser.setAttempts(0);
         newUser.setRole("utente");
         newUser.setFirstLogin(true);
         userRepository.save(newUser);
-        return "User added";
+        return randomPassword;
     }
 
     private String passwordStrenght(String newPassword) {
@@ -156,6 +157,26 @@ public class UserService {
             return "'Media'";
         else
             return "'Debole'";
+    }
+
+    private String generateRandomFirstPassword() {
+        String upperCaseLetters = RandomStringUtils.random(2, 65, 90, true, true);
+        String lowerCaseLetters = RandomStringUtils.random(2, 97, 122, true, true);
+        String numbers = RandomStringUtils.randomNumeric(2);
+        String specialChar = RandomStringUtils.random(2, 33, 47, false, false);
+        String totalChars = RandomStringUtils.randomAlphanumeric(2);
+        String combinedChars = upperCaseLetters.concat(lowerCaseLetters)
+                .concat(numbers)
+                .concat(specialChar)
+                .concat(totalChars);
+        List<Character> pwdChars = combinedChars.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toList());
+        Collections.shuffle(pwdChars);
+        String password = pwdChars.stream()
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+        return password;
     }
 
 }
