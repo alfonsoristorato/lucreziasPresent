@@ -3,7 +3,7 @@ import { useState } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import Zoom from "@mui/material/Zoom";
-import { CircularProgress, Tooltip } from "@mui/material";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import RemoveModeratorIcon from "@mui/icons-material/RemoveModerator";
 import PasswordIcon from "@mui/icons-material/Password";
@@ -72,38 +72,42 @@ const HandleUsersModal = ({
                               title="Blocca Utente"
                               TransitionComponent={Zoom}
                             >
-                              <LockOutlinedIcon
-                                role="button"
-                                color={"error"}
+                              <IconButton
+                                size="small"
                                 onClick={() =>
                                   editUserAttempts(
                                     user.id,
                                     user.attempts,
                                     setIsLoading,
                                     setUsers,
-                                    authenticated
+                                    authenticated,
+                                    setNewUserMessage
                                   )
                                 }
-                              />
+                              >
+                                <LockOutlinedIcon color={"error"} />
+                              </IconButton>
                             </Tooltip>
                           ) : (
                             <Tooltip
                               title="Sblocca Utente"
                               TransitionComponent={Zoom}
                             >
-                              <LockOpenOutlinedIcon
-                                role="button"
-                                color={"success"}
+                              <IconButton
+                                size="small"
                                 onClick={() =>
                                   editUserAttempts(
                                     user.id,
                                     user.attempts,
                                     setIsLoading,
                                     setUsers,
-                                    authenticated
+                                    authenticated,
+                                    setNewUserMessage
                                   )
                                 }
-                              />
+                              >
+                                <LockOpenOutlinedIcon color={"success"} />
+                              </IconButton>
                             </Tooltip>
                           )}
                         </div>
@@ -116,38 +120,42 @@ const HandleUsersModal = ({
                               title="Rendi Utente"
                               TransitionComponent={Zoom}
                             >
-                              <RemoveModeratorIcon
-                                role="button"
-                                color={"error"}
+                              <IconButton
+                                size="small"
                                 onClick={() =>
                                   editUserRole(
                                     user.id,
                                     user.role,
                                     setIsLoading,
                                     setUsers,
-                                    authenticated
+                                    authenticated,
+                                    setNewUserMessage
                                   )
                                 }
-                              />
+                              >
+                                <RemoveModeratorIcon color={"error"} />
+                              </IconButton>
                             </Tooltip>
                           ) : (
                             <Tooltip
                               title="Rendi Admin"
                               TransitionComponent={Zoom}
                             >
-                              <AddModeratorIcon
-                                role="button"
-                                color={"success"}
+                              <IconButton
+                                size="small"
                                 onClick={() =>
                                   editUserRole(
                                     user.id,
                                     user.role,
                                     setIsLoading,
                                     setUsers,
-                                    authenticated
+                                    authenticated,
+                                    setNewUserMessage
                                   )
                                 }
-                              />
+                              >
+                                <AddModeratorIcon color={"success"} />
+                              </IconButton>
                             </Tooltip>
                           )}
                         </div>
@@ -158,9 +166,8 @@ const HandleUsersModal = ({
                           title="Resetta Password"
                           TransitionComponent={Zoom}
                         >
-                          <PasswordIcon
-                            role="button"
-                            color={"primary"}
+                          <IconButton
+                            size="small"
                             onClick={() =>
                               resetUserPassword(
                                 user.id,
@@ -171,7 +178,9 @@ const HandleUsersModal = ({
                                 setNewUserMessage
                               )
                             }
-                          />
+                          >
+                            <PasswordIcon color={"primary"} />
+                          </IconButton>
                         </Tooltip>
                       </td>
                     </tr>

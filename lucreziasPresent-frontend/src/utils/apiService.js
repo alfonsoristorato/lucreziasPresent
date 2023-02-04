@@ -138,7 +138,8 @@ export const editUserAttempts = async (
   currentAttempts,
   setIsLoading,
   setUsers,
-  authenticated
+  authenticated,
+  setNewUserMessage
 ) => {
   setIsLoading(true);
   await callApi(
@@ -148,6 +149,7 @@ export const editUserAttempts = async (
     authenticated
   );
   getUsers(setUsers, authenticated);
+  setNewUserMessage("");
   setIsLoading(false);
 };
 
@@ -156,7 +158,8 @@ export const editUserRole = async (
   currentRole,
   setIsLoading,
   setUsers,
-  authenticated
+  authenticated,
+  setNewUserMessage
 ) => {
   setIsLoading(true);
   await callApi(
@@ -166,6 +169,7 @@ export const editUserRole = async (
     authenticated
   );
   getUsers(setUsers, authenticated);
+  setNewUserMessage("");
   setIsLoading(false);
 };
 
