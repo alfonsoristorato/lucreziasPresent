@@ -33,7 +33,7 @@ const FilterModal = ({
             }}
             className="date-picker"
             isClearable={true}
-            placeholderText="All dates selected"
+            placeholderText="  Seleziona un intervallo di date"
           />
         </div>
         <FormLabel>Autori</FormLabel>
