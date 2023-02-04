@@ -39,7 +39,7 @@ import {
   FaSmile,
 } from "react-icons/fa";
 import moment from "moment";
-
+import "moment/locale/it";
 import { deleteEntry, getData } from "../utils/apiService";
 import AddEntryModal from "../components/AddEntryModal";
 import DeleteEntryModal from "../components/DeleteEntryModal";
