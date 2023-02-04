@@ -1,7 +1,7 @@
 import DatePicker from "react-datepicker";
-
+import { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import it from "date-fns/locale/it";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Select from "react-select";
@@ -16,6 +16,8 @@ const FilterModal = ({
   authorsSelected,
   setAuthorsSelected,
 }) => {
+  registerLocale("it", it);
+  setDefaultLocale("it");
   return (
     <Modal show={show === 3} onHide={handleClose}>
       <Modal.Header closeButton>
