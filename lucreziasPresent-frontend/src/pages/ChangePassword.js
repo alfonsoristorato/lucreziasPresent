@@ -6,13 +6,18 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-
+import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { changePassword } from "../utils/apiService";
 
 const ChangePassword = ({ authenticated }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [referredFromLogin] = useState(
+    location.state?.previousPage === "/login" ? true : false
+  );
+
   const {
     register,
     handleSubmit,
@@ -98,6 +103,15 @@ const ChangePassword = ({ authenticated }) => {
                   )}
                 </Form.Group>
                 <Row>
+                  {!referredFromLogin && (
+                    <Button
+                      variant="secondary"
+                      className="mb-2"
+                      onClick={() => navigate(-1)}
+                    >
+                      Vai Indietro
+                    </Button>
+                  )}
                   <Button variant="primary" type="submit">
                     Salva
                   </Button>

@@ -97,7 +97,7 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
     user.password = data.password;
     setAuthenticated(user);
     if (user.firstLogin === true) {
-      navigate("/change-password");
+      navigate("/change-password", { state: { previousPage: "/login" } });
     } else {
       navigate("/");
     }

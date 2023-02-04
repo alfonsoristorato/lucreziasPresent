@@ -211,7 +211,7 @@ const HandleUsersModal = ({
         )}
       </Modal.Body>
 
-      <div className="delete-buttons">
+      <div className="buttons-flex">
         <Button
           variant="secondary"
           className="mb-2 mx-2"

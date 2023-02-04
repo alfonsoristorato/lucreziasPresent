@@ -10,7 +10,7 @@ const DeleteEntryModal = ({ show, handleClose, deleteMode, handleDelete }) => {
         Sei sicuro/a di voler cancellare {deleteMode.title}?
       </Modal.Body>
 
-      <div className="delete-buttons">
+      <div className="buttons-flex">
         <Button variant="secondary" className="mb-2 mx-2" onClick={handleClose}>
           Chiudi
         </Button>
