@@ -102,7 +102,7 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
       navigate("/");
     }
   } catch (error) {
-    setAuthError(error.response.data);
+    setAuthError(error.response.data.details);
   }
 };
 
@@ -124,7 +124,7 @@ export const changePassword = async (
       );
       setPasswordChangeRequested(passwordChange);
     } catch (error) {
-      setPasswordChangeRequested(error.response.data);
+      setPasswordChangeRequested(error.response.data.details);
     }
   } else {
     setPasswordChangeRequested(
@@ -141,6 +141,7 @@ export const editUserAttempts = async (
   authenticated,
   setNewUserMessage
 ) => {
+  try{
   setIsLoading(true);
   await callApi(
     `user/attempts/${userId}`,
@@ -150,7 +151,10 @@ export const editUserAttempts = async (
   );
   getUsers(setUsers, authenticated);
   setNewUserMessage("");
-  setIsLoading(false);
+  setIsLoading(false);catch (error) {
+    setNewUserMessage(error.response.data.details);
+    setIsLoading(false);
+  }
 };
 
 export const editUserRole = async (
@@ -161,16 +165,21 @@ export const editUserRole = async (
   authenticated,
   setNewUserMessage
 ) => {
-  setIsLoading(true);
-  await callApi(
-    `user/role/${userId}`,
-    "PATCH",
-    { newRole: currentRole === "admin" ? "utente" : "admin" },
-    authenticated
-  );
-  getUsers(setUsers, authenticated);
-  setNewUserMessage("");
-  setIsLoading(false);
+  try {
+    setIsLoading(true);
+    await callApi(
+      `user/role/${userId}`,
+      "PATCH",
+      { newRole: currentRole === "admin" ? "utente" : "admin" },
+      authenticated
+    );
+    getUsers(setUsers, authenticated);
+    setNewUserMessage("");
+    setIsLoading(false);
+  } catch (error) {
+    setNewUserMessage(error.response.data.details);
+    setIsLoading(false);
+  }
 };
 
 export const addUser = async (
@@ -211,18 +220,23 @@ export const resetUserPassword = async (
   authenticated,
   setNewUserMessage
 ) => {
-  setIsLoading(true);
-  const newPassword = await callApi(
-    `user/reset-password/${userId}`,
-    "PATCH",
-    null,
-    authenticated
-  );
-  getUsers(setUsers, authenticated);
-  setNewUserMessage(
-    `Password per ${username} cambiata, la password temporanea è: ${newPassword}`
-  );
-  setIsLoading(false);
+  try {
+    setIsLoading(true);
+    const newPassword = await callApi(
+      `user/reset-password/${userId}`,
+      "PATCH",
+      null,
+      authenticated
+    );
+    getUsers(setUsers, authenticated);
+    setNewUserMessage(
+      `Password per ${username} cambiata, la password temporanea è: ${newPassword}`
+    );
+    setIsLoading(false);
+  } catch (error) {
+    setNewUserMessage(error.response.data.details);
+    setIsLoading(false);
+  }
 };
 
 const getUsers = async (setUsers, authenticated) => {

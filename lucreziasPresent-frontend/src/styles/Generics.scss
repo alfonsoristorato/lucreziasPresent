@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
 }
-
 .date-picker {
   -webkit-align-items: center;
   -webkit-box-align: center;
@@ -51,4 +50,12 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+.error {
+  color: red;
+  font-size: small;
+}
+.new-password-subtitle {
+  font-size: smaller;
+  margin-bottom: 0;
 }
