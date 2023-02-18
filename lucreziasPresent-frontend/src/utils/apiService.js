@@ -141,17 +141,18 @@ export const editUserAttempts = async (
   authenticated,
   setNewUserMessage
 ) => {
-  try{
-  setIsLoading(true);
-  await callApi(
-    `user/attempts/${userId}`,
-    "PATCH",
-    { newAttempts: currentAttempts < 4 ? 4 : 0 },
-    authenticated
-  );
-  getUsers(setUsers, authenticated);
-  setNewUserMessage("");
-  setIsLoading(false);catch (error) {
+  try {
+    setIsLoading(true);
+    await callApi(
+      `user/attempts/${userId}`,
+      "PATCH",
+      { newAttempts: currentAttempts < 4 ? 4 : 0 },
+      authenticated
+    );
+    getUsers(setUsers, authenticated);
+    setNewUserMessage("");
+    setIsLoading(false);
+  } catch (error) {
     setNewUserMessage(error.response.data.details);
     setIsLoading(false);
   }
