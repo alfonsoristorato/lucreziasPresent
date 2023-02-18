@@ -1,7 +1,7 @@
 package com.alfonsoristorato.lucreziaspresentbackend.controller;
 
-import com.alfonsoristorato.lucreziaspresentbackend.model.LoginRequest;
-import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequest;
+import com.alfonsoristorato.lucreziaspresentbackend.model.LoginRequestDTO;
+import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequestDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +20,14 @@ public class CredentialsController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) throws Exception {
-        return new ResponseEntity<>(userService.validUsernameAndPassword(loginRequest.getUsername(),
-                loginRequest.getPassword()).get(), HttpStatus.OK);
+    public ResponseEntity<User> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+        return new ResponseEntity<>(userService.validUsernameAndPassword(loginRequestDTO.getUsername(),
+                loginRequestDTO.getPassword()), HttpStatus.OK);
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequest passwordChangeRequest)
-            throws Exception {
-        return new ResponseEntity<>(userService.changePassword(passwordChangeRequest),
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        return new ResponseEntity<>(userService.changePassword(passwordChangeRequestDTO),
                 HttpStatus.OK);
     }
 

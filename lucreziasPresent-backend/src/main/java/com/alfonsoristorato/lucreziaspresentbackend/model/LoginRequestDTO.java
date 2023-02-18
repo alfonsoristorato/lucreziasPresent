@@ -1,5 +1,6 @@
 package com.alfonsoristorato.lucreziaspresentbackend.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -7,7 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class LoginRequest {
+@AllArgsConstructor
+public class LoginRequestDTO {
     private String username;
 
     private String password;

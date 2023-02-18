@@ -1,25 +1,15 @@
 package com.alfonsoristorato.lucreziaspresentbackend.service;
 
-import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequest;
-import com.alfonsoristorato.lucreziaspresentbackend.model.User;
+import com.alfonsoristorato.lucreziaspresentbackend.exception.UserException;
+import com.alfonsoristorato.lucreziaspresentbackend.model.*;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,8 +27,8 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    @SneakyThrows
-    public Optional<User> validUsernameAndPassword(String username, String password) {
+
+    public User validUsernameAndPassword(String username, String password) {
         Optional<User> user = getUserByUsername(username);
 
         if (user.isPresent()) {
@@ -46,43 +36,40 @@ public class UserService {
                 if (passwordEncoder.matches(password, user.get().getPassword())) {
                     user.get().setAttempts(0);
                     userRepository.save(user.get());
-                    return user;
+                    return user.get();
                 } else {
                     user.get().setAttempts(user.get().getAttempts() + 1);
                     userRepository.save(user.get());
                 }
             } else {
-                throw new Exception("Account bloccato, contatta l'amministratore per sbloccarlo.");
+                throw new UserException(UserError.USER_ERROR("Account bloccato, contatta l'amministratore per sbloccarlo."));
             }
 
         }
-        throw new Exception("Credenziali non riconosciute.");
+        throw new UserException(UserError.USER_ERROR("Credenziali non riconosciute."));
     }
 
-    public String changePassword(PasswordChangeRequest passwordChangeRequest) throws Exception {
-        Optional<User> user = validUsernameAndPassword(passwordChangeRequest.getUsername(),
-                passwordChangeRequest.getPassword());
-        if (user.isPresent()) {
-            String newPasswordStrenght = passwordStrenght(passwordChangeRequest.getNewPassword());
-            if (passwordEncoder.matches(passwordChangeRequest.getNewPassword(), user.get().getPassword())) {
-                throw new Exception("La nuova password deve essere diversa dalla vecchia.");
-            }
-            if (newPasswordStrenght.equals("Strong")) {
-                user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
-                user.get().setFirstLogin(false);
-                userRepository.save(user.get());
-                return "Password Cambiata.";
-            } else {
-                String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrenght
-                        + ". Riprova e assicurati che sia più sicura.";
-                throw new Exception(excpetionMessage);
-            }
+    public String changePassword(PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        User user = validUsernameAndPassword(passwordChangeRequestDTO.getUsername(),
+                passwordChangeRequestDTO.getPassword());
+
+        String newPasswordStrenght = passwordStrenght(passwordChangeRequestDTO.getNewPassword());
+        if (passwordEncoder.matches(passwordChangeRequestDTO.getNewPassword(), user.getPassword())) {
+            throw new UserException(UserError.USER_ERROR("La nuova password deve essere diversa dalla vecchia."));
+        }
+        if (newPasswordStrenght.equals("Strong")) {
+            user.setPassword(passwordEncoder.encode(passwordChangeRequestDTO.getNewPassword()));
+            user.setFirstLogin(false);
+            userRepository.save(user);
+            return "Password Cambiata.";
         } else {
-            throw new Exception("No such user found.");
+            String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrenght
+                    + ". Riprova e assicurati che sia più sicura.";
+            throw new UserException(UserError.USER_ERROR(excpetionMessage));
         }
     }
 
-    public String resetUserPassword(Integer userId) throws Exception {
+    public String resetUserPassword(Integer userId) {
         String randomPassword = generateRandomFirstPassword();
         Optional<User> user = userRepository.findById((long) userId);
         if (user.isPresent()) {
@@ -91,37 +78,41 @@ public class UserService {
             userRepository.save(user.get());
             return randomPassword;
         }
-        throw new Exception("User not found");
+        throw new UserException(UserError.USER_NOT_FOUND());
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll().stream().sorted(Comparator.comparing(User::getUsername)).toList();
     }
 
-    public String editUserRole(Integer userId, String newRole) throws Exception {
+    public String editUserRole(Integer userId, ChangeUserRoleDTO changeUserRoleDTO) {
         Optional<User> user = userRepository.findById((long) userId);
         if (user.isPresent()) {
-            user.get().setRole(newRole);
+            user.get().setRole(changeUserRoleDTO.newRole());
             userRepository.save(user.get());
-            return "User role updated";
+            return "User role updated.";
         }
-        throw new Exception("User not found");
+        throw new UserException(UserError.USER_NOT_FOUND());
     }
 
-    public String editUserAttempts(Integer userId, Integer newAttempts) throws Exception {
+    public String editUserAttempts(Integer userId, ChangeUserAttemptsDTO changeUserAttemptsDTO) {
         Optional<User> user = userRepository.findById((long) userId);
         if (user.isPresent()) {
-            user.get().setAttempts(newAttempts);
+            user.get().setAttempts(changeUserAttemptsDTO.newAttempts());
             userRepository.save(user.get());
-            return "User attempts updated";
+            return "User attempts updated.";
         }
-        throw new Exception("User not found");
+        throw new UserException(UserError.USER_NOT_FOUND());
     }
 
-    public String addUser(Map<String, String> requestBody) {
+    public String addUser(NewUserRequestDTO newUserRequestDTO) {
+        Optional<User> user = userRepository.findByUsername(newUserRequestDTO.username());
+        if (user.isPresent()) {
+            throw new UserException(UserError.USER_ERROR("User already exists."));
+        }
         String randomPassword = generateRandomFirstPassword();
         User newUser = new User();
-        newUser.setUsername(requestBody.get("username"));
+        newUser.setUsername(newUserRequestDTO.username());
         newUser.setPassword(passwordEncoder.encode(randomPassword));
         newUser.setAttempts(0);
         newUser.setRole("utente");
@@ -136,7 +127,7 @@ public class UserService {
         boolean hasLower = false, hasUpper = false,
                 hasDigit = false;
         Set<Character> specialCharactersUser = new HashSet<>();
-        Set<Character> set = new HashSet<Character>(
+        Set<Character> set = new HashSet<>(
                 Arrays.asList('!', '@', '#', '$', '%', '^', '&',
                         '*', '(', ')', '-', '+'));
         for (char i : newPassword.toCharArray()) {
@@ -174,10 +165,9 @@ public class UserService {
                 .mapToObj(c -> (char) c)
                 .collect(Collectors.toList());
         Collections.shuffle(pwdChars);
-        String password = pwdChars.stream()
+        return pwdChars.stream()
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();
-        return password;
     }
 
 }
