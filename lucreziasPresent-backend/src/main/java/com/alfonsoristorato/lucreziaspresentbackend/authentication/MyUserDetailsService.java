@@ -2,12 +2,11 @@ package com.alfonsoristorato.lucreziaspresentbackend.authentication;
 
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
-
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.Optional;
 
 public class MyUserDetailsService implements UserDetailsService {
     @Autowired
