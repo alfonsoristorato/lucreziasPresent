@@ -7,6 +7,7 @@ import com.alfonsoristorato.lucreziaspresentbackend.utils.FileUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -27,7 +28,9 @@ public class EntryService {
 
     public Entry saveEntry(EntryFormWrapper entryFormWrapper, Principal user) throws IOException {
         Entry entryToSave;
+
         if (entryFormWrapper.getFile() != null) {
+            MultipartFile file = entryFormWrapper.getFile();
             entryToSave = Entry.builder()
                     .name(entryFormWrapper.getName())
                     .content(entryFormWrapper.getContent())
@@ -36,7 +39,9 @@ public class EntryService {
                     .color(entryFormWrapper.getColor())
                     .date(entryFormWrapper.getDate())
                     .owner(user.getName())
-                    .file(FileUtils.compressImage(entryFormWrapper.getFile()))
+                    .file(file.getContentType().equalsIgnoreCase("image/gif")
+                            ? file.getBytes()
+                            : FileUtils.compressImage(file))
                     .build();
         } else {
             entryToSave = Entry.builder()
@@ -67,7 +72,6 @@ public class EntryService {
             throw new Exception("This entry belongs to another user");
         }
         throw new Exception("No entry with given id");
-
 
     }
 

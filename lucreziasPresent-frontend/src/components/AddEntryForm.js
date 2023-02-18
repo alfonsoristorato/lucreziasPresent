@@ -25,9 +25,12 @@ const AddEntryForm = ({
     setFileTypeError(false);
     setFileSizeError(false);
     let validForm = true;
+    console.log(data);
     if (!editMode && data.file[0]) {
       if (
-        !["image/jpeg", "image/png", "image/jpg"].includes(data.file[0]?.type)
+        !["image/jpeg", "image/png", "image/jpg", "image/gif"].includes(
+          data.file[0]?.type
+        )
       ) {
         setFileTypeError(true);
         validForm = false;
@@ -143,7 +146,7 @@ const AddEntryForm = ({
           />
           {fileTypeError && (
             <span className="error">
-              Puoi aggiungere solo i seguenti formati: JPEG, JPG, PNG.
+              Puoi aggiungere solo i seguenti formati: JPEG, JPG, PNG, GIF.
             </span>
           )}
           {fileSizeError && (
