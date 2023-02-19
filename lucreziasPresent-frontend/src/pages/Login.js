@@ -38,6 +38,7 @@ const Login = ({ setAuthenticated }) => {
                   <Form.Control
                     type="text"
                     placeholder="Username"
+                    autoComplete="username"
                     {...register("username", { required: true })}
                   />
                   {errors.username && (
@@ -50,6 +51,7 @@ const Login = ({ setAuthenticated }) => {
                   <Form.Control
                     type="password"
                     placeholder="Password"
+                    autoComplete="password"
                     {...register("password", { required: true })}
                   />
                   {errors.password && (

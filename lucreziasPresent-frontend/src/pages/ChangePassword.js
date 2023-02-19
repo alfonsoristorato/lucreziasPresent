@@ -58,7 +58,7 @@ const ChangePassword = ({ authenticated }) => {
                   <Form.Control
                     type="password"
                     placeholder="Vecchia Password"
-                    autoComplete="new-password"
+                    autoComplete="password"
                     {...register("password", { required: true })}
                   />
                   {errors.password && (
