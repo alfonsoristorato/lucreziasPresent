@@ -133,7 +133,7 @@ const AddEntryForm = ({
       </Form.Group>
       {!editMode && (
         <Form.Group className="mb-3">
-          <Form.Label>Vuoi aggiungere una foto?</Form.Label>
+          <Form.Label>Vuoi aggiungere una foto o una gif?</Form.Label>
           <Form.Control
             as="input"
             type="file"
