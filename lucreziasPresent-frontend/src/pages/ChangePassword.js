@@ -73,8 +73,9 @@ const ChangePassword = ({ authenticated }) => {
                   <Form.Label>
                     Nuova Password
                     <p className="new-password-subtitle">
-                      Deve avere almeno una lettera grande e due caratteri
-                      speciali diversi.
+                      Deve essere composta da almeno una lettera grande, una
+                      lettera piccola, due caretteri speciali diversi ed avere
+                      un totale di 8 o più caretteri.
                     </p>
                   </Form.Label>
                   <Form.Control
