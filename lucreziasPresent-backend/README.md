@@ -54,6 +54,8 @@ https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-
 
 https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
 
+NB: Once the cert needs to be renewed, HTTP traffic needs to be allowed again via the DigitalOcean Firewall, via: https://cloud.digitalocean.com/networking/firewalls
+
 ### Install docker and dockerCompose
 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
