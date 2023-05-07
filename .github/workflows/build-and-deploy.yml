@@ -66,7 +66,6 @@ jobs:
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
-            echo "Logged in"
             # Stop running container
             docker stop $(echo $IMAGE_NAME)
             # Remove old container
@@ -75,7 +74,7 @@ jobs:
             cd lucreziasPresent
             export ALLOWED_ORIGINS_PROD=${{ secrets.ALLOWED_ORIGINS_PROD }}
             export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
-            export MYSQL_PASSWORD_PROD=aaa
+            export MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
             export MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
             docker-compose up 
 
