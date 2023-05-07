@@ -80,5 +80,5 @@ jobs:
             MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
             EOF
             # Run the docker-compose already present in droplet
-            docker-compose up 
+            docker-compose up -d
 
