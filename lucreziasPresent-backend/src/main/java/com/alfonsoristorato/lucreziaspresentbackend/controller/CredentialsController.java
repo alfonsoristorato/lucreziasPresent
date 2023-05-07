@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping
 public class CredentialsController {
@@ -26,8 +28,8 @@ public class CredentialsController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        return new ResponseEntity<>(userService.changePassword(passwordChangeRequestDTO),
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO, Principal principal) {
+        return new ResponseEntity<>(userService.changePassword(passwordChangeRequestDTO, principal),
                 HttpStatus.OK);
     }
 

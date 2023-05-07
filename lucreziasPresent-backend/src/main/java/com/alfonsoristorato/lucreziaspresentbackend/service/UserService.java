@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,21 +50,24 @@ public class UserService {
         throw new UserException(UserError.USER_ERROR("Credenziali non riconosciute."));
     }
 
-    public String changePassword(PasswordChangeRequestDTO passwordChangeRequestDTO) {
+    public String changePassword(PasswordChangeRequestDTO passwordChangeRequestDTO, Principal principal) {
+        if(!passwordChangeRequestDTO.getUsername().equals(principal.getName())){
+            throw new UserException(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."));
+        }
         User user = validUsernameAndPassword(passwordChangeRequestDTO.getUsername(),
                 passwordChangeRequestDTO.getPassword());
 
-        String newPasswordStrenght = passwordStrenght(passwordChangeRequestDTO.getNewPassword());
+        String newPasswordStrength = passwordStrenght(passwordChangeRequestDTO.getNewPassword());
         if (passwordEncoder.matches(passwordChangeRequestDTO.getNewPassword(), user.getPassword())) {
             throw new UserException(UserError.USER_ERROR("La nuova password deve essere diversa dalla vecchia."));
         }
-        if (newPasswordStrenght.equals("Strong")) {
+        if (newPasswordStrength.equals("Strong")) {
             user.setPassword(passwordEncoder.encode(passwordChangeRequestDTO.getNewPassword()));
             user.setFirstLogin(false);
             userRepository.save(user);
             return "Password Cambiata.";
         } else {
-            String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrenght
+            String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrength
                     + ". Riprova e assicurati che sia più sicura.";
             throw new UserException(UserError.USER_ERROR(excpetionMessage));
         }

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,11 +36,14 @@ public class UserServiceTest {
     @Mock
     private UserDetailsService myUserDetails;
 
+    @Mock
+    private Principal principal;
+
 
     @Test
     void validUsernameAndPassword_returnsAnOptionalOfUser() {
         String passEncoded = passwordEncoder.encode("password");
-        User user = new User(1L,"name", passEncoded, "admin", 0, false);
+        User user = new User(1L, "name", passEncoded, "admin", 0, false);
         when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
         when(myUserDetails.loadUserByUsername("name")).thenReturn(new MyUserDetails(user));
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
@@ -72,7 +76,7 @@ public class UserServiceTest {
     @Test
     void validUsernameAndPassword_throwsUserExceptionIfPasswordsDontMatch() {
         String passEncoded = passwordEncoder.encode("password");
-        User user = new User(1L,"name", passEncoded, "admin", 0, false);
+        User user = new User(1L, "name", passEncoded, "admin", 0, false);
         when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
         when(myUserDetails.loadUserByUsername("name")).thenReturn(new MyUserDetails(user));
 
@@ -90,7 +94,7 @@ public class UserServiceTest {
     @Test
     void validUsernameAndPassword_throwsUserExceptionIfAccountIsLocked() {
         String passEncoded = passwordEncoder.encode("password");
-        User user = new User(1L,"name", passEncoded, "admin", 4, false);
+        User user = new User(1L, "name", passEncoded, "admin", 4, false);
         when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
         when(myUserDetails.loadUserByUsername("name")).thenReturn(new MyUserDetails(user));
 
@@ -109,28 +113,43 @@ public class UserServiceTest {
     void changePassword_returnsExpectedMessage() {
         PasswordChangeRequestDTO passwordChangeRequestDTO = new PasswordChangeRequestDTO("name", "password", "passworD123*!");
         String passEncoded = passwordEncoder.encode("password");
-        User user = new User(1L,"name", passEncoded, "admin", 0, false);
+        User user = new User(1L, "name", passEncoded, "admin", 0, false);
         when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
         when(myUserDetails.loadUserByUsername("name")).thenReturn(new MyUserDetails(user));
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
+        when(principal.getName()).thenReturn("name");
 
-        String response = userService.changePassword(passwordChangeRequestDTO);
+        String response = userService.changePassword(passwordChangeRequestDTO, principal);
 
         Assertions.assertEquals("Password Cambiata.", response);
         verify(userRepository, times(2)).save(user);
     }
 
     @Test
+    void changePassword_throwsUserExceptionIfPrincipalNameAndUsernameInDTODontMatch() {
+        PasswordChangeRequestDTO passwordChangeRequestDTO = new PasswordChangeRequestDTO("name", "passworD123*!", "newPassword");
+
+        when(principal.getName()).thenReturn("differentUser");
+
+        UserException ex = Assertions.assertThrows(UserException.class,
+                () -> userService.changePassword(passwordChangeRequestDTO, principal));
+
+        Assertions.assertEquals(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."), ex.getUsererror());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
     void changePassword_throwsUserExceptionIfNewPasswordIsSameAsOld() {
         PasswordChangeRequestDTO passwordChangeRequestDTO = new PasswordChangeRequestDTO("name", "passworD123*!", "passworD123*!");
         String passEncoded = passwordEncoder.encode("passworD123*!");
-        User user = new User(1L,"name", passEncoded, "admin", 0, false);
+        User user = new User(1L, "name", passEncoded, "admin", 0, false);
         when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
         when(myUserDetails.loadUserByUsername("name")).thenReturn(new MyUserDetails(user));
         when(passwordEncoder.matches("passworD123*!", user.getPassword())).thenReturn(true);
+        when(principal.getName()).thenReturn("name");
 
         UserException ex = Assertions.assertThrows(UserException.class,
-                () -> userService.changePassword(passwordChangeRequestDTO));
+                () -> userService.changePassword(passwordChangeRequestDTO, principal));
 
         Assertions.assertEquals(UserError.USER_ERROR("La nuova password deve essere diversa dalla vecchia."), ex.getUsererror());
         verify(userRepository).save(user);
@@ -141,13 +160,14 @@ public class UserServiceTest {
     void changePassword_throwsUserExceptionIfNewPasswordIsNotStrong(String newPassword) {
         PasswordChangeRequestDTO passwordChangeRequestDTO = new PasswordChangeRequestDTO("name", "password", newPassword);
         String passEncoded = passwordEncoder.encode("password");
-        User user = new User(1L,"name", passEncoded, "admin", 0, false);
+        User user = new User(1L, "name", passEncoded, "admin", 0, false);
         when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
         when(myUserDetails.loadUserByUsername("name")).thenReturn(new MyUserDetails(user));
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
+        when(principal.getName()).thenReturn("name");
 
         UserException ex = Assertions.assertThrows(UserException.class,
-                () -> userService.changePassword(passwordChangeRequestDTO));
+                () -> userService.changePassword(passwordChangeRequestDTO,principal));
         String exceptionMessage = "La nuova password ha una sicurezza di tipo: " + (newPassword.equals("weak") ? "'Debole'" : "'Media'")
                 + ". Riprova e assicurati che sia più sicura.";
         Assertions.assertEquals(UserError.USER_ERROR(exceptionMessage), ex.getUsererror());
@@ -156,7 +176,7 @@ public class UserServiceTest {
 
     @Test
     void resetUserPassword_returnsANewPassword() {
-        User user = new User(1L,"name", "password", "admin", 0, false);
+        User user = new User(1L, "name", "password", "admin", 0, false);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         String newPassword = userService.resetUserPassword(1);
@@ -178,7 +198,7 @@ public class UserServiceTest {
 
     @Test
     void getAllUsers_returnsAListOfUsers() {
-        User user = new User(1L,"name", "password", "admin", 0, false);
+        User user = new User(1L, "name", "password", "admin", 0, false);
         when(userRepository.findAll()).thenReturn(List.of(user));
 
         List<User> listReturned = userService.getAllUsers();
@@ -189,7 +209,7 @@ public class UserServiceTest {
     @Test
     void editUserRole_returnsExpectedMessage() {
         ChangeUserRoleDTO changeUserRoleDTO = new ChangeUserRoleDTO("admin");
-        User user = new User(1L,"name", "password", "user", 4, false);
+        User user = new User(1L, "name", "password", "user", 4, false);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         String response = userService.editUserRole(1, changeUserRoleDTO);
@@ -216,7 +236,7 @@ public class UserServiceTest {
     @Test
     void editUserAttempts_returnsExpectedMessage() {
         ChangeUserAttemptsDTO changeUserAttemptsDTO = new ChangeUserAttemptsDTO(0);
-        User user = new User(1L,"name", "password", "admin", 4, false);
+        User user = new User(1L, "name", "password", "admin", 4, false);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         String response = userService.editUserAttempts(1, changeUserAttemptsDTO);
@@ -257,13 +277,13 @@ public class UserServiceTest {
     @Test
     void addUser_throwsUserExceptionIfUserAlreadyExists() {
         NewUserRequestDTO newUserRequestDTO = new NewUserRequestDTO("newUser");
-        User user = new User(1L,"newUser", "password", "user", 0, false);
+        User user = new User(1L, "newUser", "password", "user", 0, false);
         when(userRepository.findByUsername("newUser")).thenReturn(Optional.of(user));
 
         UserException ex = Assertions.assertThrows(UserException.class,
-                ()-> userService.addUser(newUserRequestDTO));
+                () -> userService.addUser(newUserRequestDTO));
 
         Assertions.assertEquals(UserError.USER_ERROR("User already exists."), ex.getUsererror());
-        verify(userRepository,never()).save(user);
+        verify(userRepository, never()).save(user);
     }
 }
