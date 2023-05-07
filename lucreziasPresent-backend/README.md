@@ -1,17 +1,10 @@
 # Server creation
 
-### Create a docker image
+### CI/CD
 
-- ensure you have your .env file filled and in resources folder
-- create image from dockerfile:
-
-1. docker build -t alfonsoristorato/lucrezia:latest .
-
-- push it to dockerhub:
-
-1. docker login
-2. docker push alfonsoristorato/lucrezia:latest
-3. docker logout (if needed)
+CI/CD is achieved via GitHub actions. 
+- CI: Docker image is created and pushed to digital ocean registry.
+- CD: runner ssh into droplet, logs in to the registry, stops running container, saves env vars into a file and fires up docker-compose
 
 ### Create a droplet on Digital Ocean
 
