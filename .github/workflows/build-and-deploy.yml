@@ -74,7 +74,7 @@ jobs:
             cd lucreziasPresent
             export ALLOWED_ORIGINS_PROD=${{ secrets.ALLOWED_ORIGINS_PROD }}
             export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
-            export MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
+            export MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD }}
             export MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
             docker-compose up 
 
