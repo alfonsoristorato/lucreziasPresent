@@ -98,9 +98,3 @@ https://www.digitalocean.com/community/tutorials/how-to-allow-remote-access-to-m
 
 1. scp docker-compose.yml root@dropletip:/home/alfonso/lucrezia
 
-### Start the application
-
-- docker login
-- docker pull alfonsoristorato/lucrezia:latest
-- docker logout
-- docker-compose up (add -d if undetached)
