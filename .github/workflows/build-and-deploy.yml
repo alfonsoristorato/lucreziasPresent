@@ -73,10 +73,9 @@ jobs:
             docker rm $(echo $IMAGE_NAME)
             # Run the docker-compose already present in droplet
             cd lucreziasPresent
-            docker-compose up
-#            # Run a new container from a new image
-#            docker run -d \
-#            --restart always \
-#            --name $(echo $IMAGE_NAME) \
-#            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+            export ALLOWED_ORIGINS_PROD=${{ secrets.ALLOWED_ORIGINS_PROD }}
+            export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
+            export MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
+            export MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
+            docker-compose up -d
 

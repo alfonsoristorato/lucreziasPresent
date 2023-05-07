@@ -6,5 +6,10 @@ services:
       - 'host.docker.internal:host-gateway'
     ports:
       - '8080:8080'
-    image: alfonsoristorato/lucrezia:latest
+    image: registry.digitalocean.com/digital-ocean-registry-alfonso/lucrezia:latest
     restart: always
+    environment:
+      ALLOWED_ORIGINS_PROD: ${ALLOWED_ORIGINS_PROD}
+      DB_URL_PROD: ${DB_URL_PROD}
+      MYSQL_USERNAME_PROD: ${MYSQL_USERNAME_PROD}
+      MYSQL_PASSWORD_PROD: ${MYSQL_PASSWORD_PROD}
