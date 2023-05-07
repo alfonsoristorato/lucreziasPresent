@@ -32,7 +32,7 @@ jobs:
       - name: Build container image
 #        below allows to give tags via the github commit, not needed in this case
 #        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
-        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME) .
+        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -48,7 +48,7 @@ jobs:
       - name: Push image to DigitalOcean Container Registry
 #        below allows to push ima with tags via the github commit, not needed in this case
 #        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME) .
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest .
 
   deploy:
     runs-on: ubuntu-latest
