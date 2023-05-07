@@ -75,8 +75,8 @@ jobs:
             cat <<EOF >env_vars.txt
             ALLOWED_ORIGINS_PROD=${{ secrets.ALLOWED_ORIGINS_PROD }}
             DB_URL_PROD=${{ secrets.DB_URL_PROD }}
-            MYSQL_USERNAME_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
-            MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
+            MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
+            MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
             EOF
             # Run the docker-compose already present in droplet
             docker-compose up 
