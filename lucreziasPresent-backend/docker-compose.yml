@@ -9,8 +9,4 @@ services:
       - '8080:8080'
     image: registry.digitalocean.com/digital-ocean-registry-alfonso/lucrezia:latest
     restart: always
-    environment:
-      ALLOWED_ORIGINS_PROD: ${ALLOWED_ORIGINS_PROD}
-      DB_URL_PROD: ${DB_URL_PROD}
-      MYSQL_USERNAME_PROD: ${MYSQL_USERNAME_PROD}
-      MYSQL_PASSWORD_PROD: ${MYSQL_PASSWORD_PROD}
+    env_file: ./env_vars.txt

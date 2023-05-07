@@ -70,11 +70,14 @@ jobs:
             docker stop $(echo $IMAGE_NAME)
             # Remove old container
             docker rm $(echo $IMAGE_NAME)
-            # Run the docker-compose already present in droplet
+            # Create text-file containing env variables
             cd lucreziasPresent
-            export ALLOWED_ORIGINS_PROD=${{ secrets.ALLOWED_ORIGINS_PROD }}
-            export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
-            export MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD }}
-            export MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
+            cat <<EOF >env_vars.txt
+            ALLOWED_ORIGINS_PROD=${{ secrets.ALLOWED_ORIGINS_PROD }}
+            DB_URL_PROD=${{ secrets.DB_URL_PROD }}
+            MYSQL_USERNAME_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
+            MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
+            EOF
+            # Run the docker-compose already present in droplet
             docker-compose up 
 
