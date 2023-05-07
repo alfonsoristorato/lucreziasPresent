@@ -77,5 +77,6 @@ jobs:
             export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
             export MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
             export MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
-            docker-compose up -d
+            docker-compose config
+            docker-compose up 
 
