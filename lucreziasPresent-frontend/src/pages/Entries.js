@@ -140,7 +140,7 @@ const Entries = ({ authenticated }) => {
     return (
       <Container className="entries">
         <div className="title">
-          <h2>Ciao bimba</h2>
+          <h2>Ciao Viola</h2>
           <h4>Ti abbiamo scritto dei ricordi</h4>
         </div>
 
