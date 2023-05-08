@@ -1,5 +1,3 @@
-app:
-  default-password: ${env.DEFAULT_PASSWORD}
 web:
   cors:
     allowed-origins: ${env.ALLOWED_ORIGINS}
