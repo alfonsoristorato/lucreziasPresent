@@ -37,8 +37,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "./scp"
+          source: "./scp/docker-compose.yml"
           target: 'lucreziasPresent'
+          strip_components: 1
 
       - name: Build container image
 #        below allows to give tags via the github commit, not needed in this case
