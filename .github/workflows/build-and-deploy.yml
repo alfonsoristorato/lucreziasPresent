@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: 'scp/docker-compose.yml'
-          target: '/lucreziasPresent'
+          target: 'lucreziasPresent'
 
 
       - name: Deploy to Digital Ocean droplet via SSH action
