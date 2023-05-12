@@ -17,6 +17,7 @@ public class Entry {
     private Long id;
     private String name;
     @Column(columnDefinition = "LONGTEXT")
+
     private String content;
     private String title;
     private Integer icon;
