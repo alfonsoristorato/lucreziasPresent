@@ -58,12 +58,11 @@ jobs:
     steps:
       - name: Transfer the docker-compose.yml file via scp Actio
         uses: appleboy/scp-action@master
-        env:
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-        with:
           source: './scp/docker-compose.yml'
           target: '/lucreziasPresent'
 
