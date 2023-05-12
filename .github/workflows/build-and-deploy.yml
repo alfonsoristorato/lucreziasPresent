@@ -56,6 +56,18 @@ jobs:
     needs: build_and_push
 
     steps:
+      - name: Transfer the docker-compose.yml file via scp Actio
+        uses: appleboy/scp-action@master
+        env:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+        with:
+          source: './scp/docker-compose.yml'
+          target: '/lucreziasPresent'
+
+
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@master
         with:
@@ -79,8 +91,6 @@ jobs:
             MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
             MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
             EOF
-            # transfer the docker-compose
-            scp ../files/docker-compose.yml alfonso@${{ secrets.HOST }}:/lucreziasPresent
-            # Run the docker-compose just transferred
+            # Run the docker-compose transferred via step above
             docker-compose up -d
 
