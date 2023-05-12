@@ -1,13 +1,13 @@
 web:
   cors:
-    allowed-origins: ${env.ALLOWED_ORIGINS}
+    allowed-origins: http://localhost:3000
     allowed-methods: "GET, POST, PATCH, DELETE, OPTIONS"
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: ${env.DB_URL}
-    username: ${env.MYSQL_USERNAME}
-    password: ${env.MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/lucreziasPresent
+    username: admin
+    password: password
   servlet:
     multipart:
       max-file-size: 15MB

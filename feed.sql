@@ -11,24 +11,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 SET @password = 'YOURPASSWORD';
 
+DELETE FROM lucreziasPresent.user WHERE id = 1;
+
 INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (1,'admin',0,0,@password,'admin');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (2, 'user', 0, 0, @password, 'user');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (3, 'userPassChange', 0, 1, @password, 'user');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (4, 'userRoleChange', 0, 0, @password, 'user');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (5, 'adminFirstLogin', 0, 1, @password, 'admin');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (6, 'userFirstLogin', 0, 1, @password, 'user');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (7, 'adminLocked', 4, 0, @password, 'admin');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (8, 'userLocked', 4, 0, @password, 'user');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (9, 'userToLock', 0, 0, @password, 'user');
-INSERT INTO lucreziasPresent.user (id, username, attempts, first_login, password, role)
-VALUES (10, 'userResetPassword', 0, 0, @password, 'user');
+VALUES (999, 'admin', 0, 0, @password, 'admin');
 

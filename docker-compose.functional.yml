@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  mysqldb:
+  mysqldb-func:
     image: mysql
     restart: unless-stopped
     environment:
@@ -10,12 +10,11 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - db:/var/lib/mysql
-      - ./feed.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./feed-functional.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
     depends_on:
-      - mysqldb
+      - mysqldb-func
     build:
       context: ./lucreziasPresent-backend
     restart: on-failure
@@ -24,7 +23,7 @@ services:
     environment:
       SPRING_APPLICATION_JSON: '{
         "web.cors.allowed-origins"   : "http://localhost:3000",
-        "spring.datasource.url"      : "jdbc:mysql://mysqldb:3306/lucreziasPresent?useSSL=false&allowPublicKeyRetrieval=true",
+        "spring.datasource.url"      : "jdbc:mysql://mysqldb-func:3306/lucreziasPresent?useSSL=false&allowPublicKeyRetrieval=true",
         "spring.datasource.username" : "root",
         "spring.datasource.password" : "rootPass",
         "spring.profiles.active"     : "default"
@@ -34,12 +33,9 @@ services:
 
   frontend:
     depends_on:
-      - mysqldb
+      - mysqldb-func
       - backend
     build:
       context: ./lucreziasPresent-frontend
     ports:
       - "3000:3000"
-
-volumes:
-  db:

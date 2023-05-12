@@ -79,6 +79,8 @@ jobs:
             MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
             MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
             EOF
-            # Run the docker-compose already present in droplet
+            # transfer the docker-compose
+            scp ../files/docker-compose.yml alfonso@${{ secrets.HOST }}:/lucreziasPresent
+            # Run the docker-compose just transferred
             docker-compose up -d
 
