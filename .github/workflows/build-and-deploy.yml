@@ -37,7 +37,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "../scp/docker-compose.yml"
+          source: "./scp/docker-compose.yml"
           target: '/lucreziasPresent'
 
       - name: Build container image
