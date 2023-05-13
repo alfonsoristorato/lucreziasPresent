@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Start app for functional tests
-        working-directory: ./
+        working-directory: ../
         run: ./start-app-for-func-tests.sh
 
       - name: Transfer the docker-compose.yml file via scp Action
@@ -54,7 +54,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: run gradle task for functional test
-        working-directory: ./
+        working-directory: ../
         run: ./run-func-tests.sh
 
       - name: Install doctl
