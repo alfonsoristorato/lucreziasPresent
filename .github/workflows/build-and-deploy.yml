@@ -62,7 +62,7 @@ jobs:
       - name: Dump backend logs
         uses: jwalton/gh-docker-logs@v2
         with:
-          images: 'backend'
+          images: 'ucreziaspresent_backend_1'
 
       - name: run gradle task for functional test
         working-directory: ./
