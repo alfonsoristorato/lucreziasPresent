@@ -59,6 +59,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '60s'
+
       - name: run gradle task for functional test
         working-directory: ./
         run: ./run-func-tests.sh
