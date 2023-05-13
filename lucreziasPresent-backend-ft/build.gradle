@@ -7,8 +7,6 @@ plugins {
 group = 'com.alfonsoristorato'
 version = '1.0-SNAPSHOT'
 
-project.sourceCompatibility = JavaVersion.VERSION_17
-project.targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
@@ -30,9 +28,6 @@ dependencies {
 
 }
 
-final profile = java.util.Optional.ofNullable(System.getenv("JENKINS_AGENT_NAME"))
-        .map { _ -> "stubbed-functional" }.orElse("local")
-
 configurations {
     cucumberRuntime {
         extendsFrom testImplementation
@@ -43,10 +38,8 @@ task cucumber() {
     dependsOn assemble, testClasses
     doLast {
         javaexec {
-            systemProperties = ['spring.profiles.active': profile]
             main = "io.cucumber.core.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            environment("env", findProperty("env")?:"local")
             args = [
                     '--plugin', 'pretty',
                     '--plugin', 'html:build/reports/report.html',
