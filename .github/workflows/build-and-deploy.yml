@@ -30,6 +30,12 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
+      - name: Setup Java
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: Start app for functional tests
         working-directory: ./
         run: ./start-app-for-func-tests.sh -d
