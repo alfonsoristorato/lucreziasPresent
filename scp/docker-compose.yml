@@ -8,5 +8,9 @@ services:
     ports:
       - '8080:8080'
     image: registry.digitalocean.com/digital-ocean-registry-alfonso/lucrezia:latest
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.profiles.active"     : "prod"
+      }'
     restart: always
     env_file: ./env_vars.txt

@@ -13,4 +13,4 @@ COPY --from=build /home/gradle/src/build/libs/*SNAPSHOT.jar /app/spring-boot-app
 
 
 
-CMD java -jar -Dspring.profiles.active=prod /app/spring-boot-application.jar
+CMD java -jar /app/spring-boot-application.jar
