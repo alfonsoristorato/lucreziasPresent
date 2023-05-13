@@ -59,14 +59,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: run gradle task for functional test
+        working-directory: ./
+        run: ./run-func-tests.sh
+
       - name: Dump backend logs
         uses: jwalton/gh-docker-logs@v2
         with:
           images: 'backend'
-
-      - name: run gradle task for functional test
-        working-directory: ./
-        run: ./run-func-tests.sh
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
