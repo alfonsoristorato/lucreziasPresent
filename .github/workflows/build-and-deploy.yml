@@ -45,6 +45,10 @@ jobs:
         working-directory: ./
         run: ./start-app-for-func-tests.sh -d '${{ secrets.TEST_USERS_PASSWORD }}'
 
+      - name: Sleep for 30 seconds so that docker-compose is ready
+        run: sleep 30s
+        shell: bash
+
       - name: Run gradle task for backend functional test
         working-directory: ./
         run: ./run-func-tests.sh

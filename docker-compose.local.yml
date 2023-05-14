@@ -3,6 +3,7 @@ version: "3.8"
 services:
   mysqldb:
     image: mysql
+    command: mysqld --sql_mode="" --max_connections=1100 --general-log=1 --general-log-file=/tmp/mysql-general-log.log
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=rootPass
@@ -13,10 +14,15 @@ services:
     volumes:
       - db:/var/lib/mysql
       - ./feed.sh:/docker-entrypoint-initdb.d/init.sh
+    healthcheck:
+      test: 'cat /tmp/mysql-general-log.log | grep ".user (id, username, attempts, first_login, password, role)"'
+      interval: 10s
+      retries: 120
 
   backend:
     depends_on:
-      - mysqldb
+      mysqldb:
+        condition: service_healthy
     build:
       context: ./lucreziasPresent-backend
     restart: on-failure
@@ -35,8 +41,10 @@ services:
 
   frontend:
     depends_on:
-      - mysqldb
-      - backend
+      mysqldb:
+        condition: service_healthy
+      backend:
+        condition: service_started
     build:
       context: ./lucreziasPresent-frontend
     ports:
