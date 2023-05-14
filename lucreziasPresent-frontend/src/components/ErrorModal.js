@@ -1,7 +1,6 @@
 import Modal from "react-bootstrap/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { hideModal } from "../utils/reduxErrorModalSlice";
-import { useEffect } from "react";
 
 const ErrorModal = () => {
   const show = useSelector((state) => state.errorModal.value);

@@ -19,7 +19,7 @@ const App = () => {
 
   useEffect(() => {
     actionImporter.showErrorModal = (error) => showErrorModal(error);
-  }, []);
+  }, [showErrorModal]);
 
   return (
     <Router>
