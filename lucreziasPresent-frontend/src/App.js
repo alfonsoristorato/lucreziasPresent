@@ -13,13 +13,9 @@ const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const dispatch = useDispatch();
 
-  const showErrorModal = (error) => {
-    dispatch(showModal(error));
-  };
-
   useEffect(() => {
-    actionImporter.showErrorModal = (error) => showErrorModal(error);
-  }, [showErrorModal]);
+    actionImporter.showErrorModal = (error) => dispatch(showModal(error));
+  });
 
   return (
     <Router>
