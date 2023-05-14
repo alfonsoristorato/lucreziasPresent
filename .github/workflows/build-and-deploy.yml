@@ -33,9 +33,33 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Setup doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
       - name: Start app for functional tests
         working-directory: ./
         run: ./start-app-for-func-tests.sh -d '${{ secrets.TEST_USERS_PASSWORD }}'
+
+      - name: Run gradle task for backend functional test
+        working-directory: ./
+        run: ./run-func-tests.sh
+
+      - name: Build backend image again with required tags
+        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME) .
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Remove all old images
+        run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)
 
       - name: Transfer the docker-compose.yml file via scp Action
         uses: appleboy/scp-action@master
@@ -47,30 +71,6 @@ jobs:
           source: "./scp/docker-compose.yml"
           target: 'lucreziasPresent'
           strip_components: 2
-
-      - name: Build container image
-        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME) .
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Run gradle task for backend functional test
-        working-directory: ./
-        run: ./run-func-tests.sh
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      - name: Log in to DigitalOcean Container Registry with short-lived credentials
-        run: doctl registry login --expiry-seconds 600
-
-      - name: Remove all old images
-        run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
-
-      - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)
 
   deploy:
     runs-on: ubuntu-latest
