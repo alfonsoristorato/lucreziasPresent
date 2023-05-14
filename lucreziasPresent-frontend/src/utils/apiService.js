@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const apiOrigin = `${process.env.REACT_APP_API}`;
+export const actionImporter = {};
 
 export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
   try {
@@ -20,6 +21,8 @@ export const callApi = async (route, methodUsed, bodyUsed, authenticated) => {
     const response = await axios.request(`${apiOrigin}/${route}`, axiosInit);
     return response.data;
   } catch (error) {
+    !error.response?.data?.details &&
+      actionImporter.showErrorModal(error.response.data);
     throw error;
   }
 };
@@ -102,7 +105,11 @@ export const login = async (setAuthenticated, setAuthError, data, navigate) => {
       navigate("/");
     }
   } catch (error) {
-    setAuthError(error.response.data.details);
+    if (error.response?.data?.details) {
+      setAuthError(error.response.data.details);
+    } else {
+      throw error;
+    }
   }
 };
 
