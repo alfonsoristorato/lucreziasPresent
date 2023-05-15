@@ -88,10 +88,6 @@ jobs:
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
-            # Stop running container
-            docker stop $(echo $IMAGE_NAME)
-            # Remove old container
-            docker rm $(echo $IMAGE_NAME)
             # Create text-file containing env variables
             cd lucreziasPresent
             cat <<EOF >env_vars.txt
@@ -100,6 +96,12 @@ jobs:
             MYSQL_USERNAME_PROD=${{ secrets.MYSQL_USERNAME_PROD }}
             MYSQL_PASSWORD_PROD=${{ secrets.MYSQL_PASSWORD_PROD }}
             EOF
+            # Stop docker compose
+            docker-compose down
+            # Pull new image
+            docker-compose pull
             # Run the docker-compose transferred via step above
-            docker-compose up -d
+            docker-compose up --force-recreate --build -d
+            # Delete unused images
+            docker image prune -f
 
