@@ -68,7 +68,7 @@ Feature: User Controller Features
     Given The next request contains the following path parameters: "notAnUser"
     When Client makes a "PATCH" request to "user/edit-role" endpoint with the following body
       | newRole | admin |
-    Then Client receives a status code of 500
+    Then Client receives a status code of 404
     And The response has the following properties
       | description | User error      |
       | details     | User not found. |
@@ -109,7 +109,7 @@ Feature: User Controller Features
     Given The next request contains the following path parameters: "notAnUser"
     When Client makes a "PATCH" request to "user/edit-attempts" endpoint with the following body
       | newAttempts | 0 |
-    Then Client receives a status code of 500
+    Then Client receives a status code of 404
     And The response has the following properties
       | description | User error      |
       | details     | User not found. |
@@ -172,7 +172,7 @@ Feature: User Controller Features
     Given The next request contains the following path parameters: "notAnUser"
     When Client makes a "PATCH" request to "user/reset-password" endpoint
       | "" | "" |
-    Then Client receives a status code of 500
+    Then Client receives a status code of 404
     And The response has the following properties
       | description | User error      |
       | details     | User not found. |

@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         log.error("Caught the following exception: {} with message: {}", ex.getClass(), ex.getError());
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         if(ex.getError().equals(UserError.USER_NOT_FOUND())){
-            httpStatus = HttpStatus.BAD_REQUEST;
+            httpStatus = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity<>(ex.getError(), httpStatus);
     }
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         log.error("Caught the following exception: {} with message: {}", ex.getClass(), ex.getError());
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         if(ex.getError().equals(EntryError.ENTRY_NOT_FOUND())){
-            httpStatus = HttpStatus.BAD_REQUEST;
+            httpStatus = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity<>(ex.getError(), httpStatus);
     }
