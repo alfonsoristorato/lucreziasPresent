@@ -1,5 +1,6 @@
 package com.alfonsoristorato.lucreziaspresentbackend.utils;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,9 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-
-public class FileUtils {
-    public static byte[] compressImage(MultipartFile file) throws IOException {
+@Service
+public class ImageCompressorService implements ImageCompressor {
+    public byte[] compressImage(MultipartFile file) throws IOException {
 
         InputStream inputStream = file.getInputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

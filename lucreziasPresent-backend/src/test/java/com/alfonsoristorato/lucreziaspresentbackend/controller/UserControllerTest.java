@@ -1,6 +1,5 @@
-package com.alfonsoristorato.lucreziaspresentbackend.controllers;
+package com.alfonsoristorato.lucreziaspresentbackend.controller;
 
-import com.alfonsoristorato.lucreziaspresentbackend.controller.UserController;
 import com.alfonsoristorato.lucreziaspresentbackend.model.ChangeUserAttemptsDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.ChangeUserRoleDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.NewUserRequestDTO;

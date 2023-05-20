@@ -4,7 +4,6 @@ import com.alfonsoristorato.lucreziaspresentbackend.exception.UserException;
 import com.alfonsoristorato.lucreziaspresentbackend.model.*;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,14 +14,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserDetailsService myUserDetails;
+
+    private final PasswordEncoder passwordEncoder;
+
+
+    private final UserDetailsService myUserDetails;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserDetailsService myUserDetails) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.myUserDetails = myUserDetails;
+    }
 
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -30,28 +35,27 @@ public class UserService {
 
 
     public User validUsernameAndPassword(String username, String password) {
-        Optional<User> user = getUserByUsername(username);
-
-        if (user.isPresent()) {
-            if (myUserDetails.loadUserByUsername(username).isAccountNonLocked()) {
-                if (passwordEncoder.matches(password, user.get().getPassword())) {
-                    user.get().setAttempts(0);
-                    userRepository.save(user.get());
-                    return user.get();
-                } else {
-                    user.get().setAttempts(user.get().getAttempts() + 1);
-                    userRepository.save(user.get());
-                }
-            } else {
-                throw new UserException(UserError.USER_ERROR("Account bloccato, contatta l'amministratore per sbloccarlo."));
-            }
-
-        }
-        throw new UserException(UserError.USER_ERROR("Credenziali non riconosciute."));
+        return getUserByUsername(username)
+                .map(user -> {
+                    if (myUserDetails.loadUserByUsername(username).isAccountNonLocked()) {
+                        if (passwordEncoder.matches(password, user.getPassword())) {
+                            user.setAttempts(0);
+                            userRepository.save(user);
+                            return user;
+                        } else {
+                            user.setAttempts(user.getAttempts() + 1);
+                            userRepository.save(user);
+                            throw new UserException(UserError.USER_ERROR("Credenziali non riconosciute."));
+                        }
+                    } else {
+                        throw new UserException(UserError.USER_ERROR("Account bloccato, contatta l'amministratore per sbloccarlo."));
+                    }
+                })
+                .orElseThrow(() -> new UserException(UserError.USER_ERROR("Credenziali non riconosciute.")));
     }
 
     public String changePassword(PasswordChangeRequestDTO passwordChangeRequestDTO, Principal principal) {
-        if(!passwordChangeRequestDTO.getUsername().equals(principal.getName())){
+        if (!passwordChangeRequestDTO.getUsername().equals(principal.getName())) {
             throw new UserException(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."));
         }
         User user = validUsernameAndPassword(passwordChangeRequestDTO.getUsername(),
@@ -67,60 +71,62 @@ public class UserService {
             userRepository.save(user);
             return "Password Cambiata.";
         } else {
-            String excpetionMessage = "La nuova password ha una sicurezza di tipo: " + newPasswordStrength
-                    + ". Riprova e assicurati che sia più sicura.";
-            throw new UserException(UserError.USER_ERROR(excpetionMessage));
+            String exceptionMessage = String.format("La nuova password ha una sicurezza di tipo: %s. Riprova e assicurati che sia più sicura.", newPasswordStrength);
+            throw new UserException(UserError.USER_ERROR(exceptionMessage));
         }
     }
 
     public String resetUserPassword(Integer userId) {
         String randomPassword = generateRandomFirstPassword();
-        Optional<User> user = userRepository.findById((long) userId);
-        if (user.isPresent()) {
-            user.get().setPassword(passwordEncoder.encode(randomPassword));
-            user.get().setFirstLogin(true);
-            userRepository.save(user.get());
-            return randomPassword;
-        }
-        throw new UserException(UserError.USER_NOT_FOUND());
+        return userRepository.findById((long) userId)
+                .map(user -> {
+                    user.setPassword(passwordEncoder.encode(randomPassword));
+                    user.setFirstLogin(true);
+                    userRepository.save(user);
+                    return randomPassword;
+                })
+                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND()));
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll().stream().sorted(Comparator.comparing(User::getUsername)).toList();
+        return userRepository.findAll().stream().sorted(Comparator.comparing(User::getUsername)).collect(Collectors.toList());
     }
 
     public String editUserRole(Integer userId, ChangeUserRoleDTO changeUserRoleDTO) {
-        Optional<User> user = userRepository.findById((long) userId);
-        if (user.isPresent()) {
-            user.get().setRole(changeUserRoleDTO.newRole());
-            userRepository.save(user.get());
-            return "User role updated.";
-        }
-        throw new UserException(UserError.USER_NOT_FOUND());
+        return userRepository.findById((long) userId)
+                .map(user -> {
+                    user.setRole(changeUserRoleDTO.newRole());
+                    userRepository.save(user);
+                    return "User role updated.";
+                })
+                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND()));
     }
 
     public String editUserAttempts(Integer userId, ChangeUserAttemptsDTO changeUserAttemptsDTO) {
-        Optional<User> user = userRepository.findById((long) userId);
-        if (user.isPresent()) {
-            user.get().setAttempts(changeUserAttemptsDTO.newAttempts());
-            userRepository.save(user.get());
-            return "User attempts updated.";
-        }
-        throw new UserException(UserError.USER_NOT_FOUND());
+        return userRepository.findById((long) userId)
+                .map(user -> {
+                    user.setAttempts(changeUserAttemptsDTO.newAttempts());
+                    userRepository.save(user);
+                    return "User attempts updated.";
+                })
+                .orElseThrow(() -> new UserException(UserError.USER_NOT_FOUND()));
     }
 
     public String addUser(NewUserRequestDTO newUserRequestDTO) {
-        Optional<User> user = userRepository.findByUsername(newUserRequestDTO.username());
-        if (user.isPresent()) {
-            throw new UserException(UserError.USER_ERROR("User already exists."));
-        }
+        userRepository.findByUsername(newUserRequestDTO.username())
+                .ifPresent(user -> {
+                    throw new UserException(UserError.USER_ERROR("User already exists."));
+                });
+
         String randomPassword = generateRandomFirstPassword();
-        User newUser = new User();
-        newUser.setUsername(newUserRequestDTO.username());
-        newUser.setPassword(passwordEncoder.encode(randomPassword));
-        newUser.setAttempts(0);
-        newUser.setRole("utente");
-        newUser.setFirstLogin(true);
+        User newUser = User
+                .builder()
+                .username(newUserRequestDTO.username())
+                .password(passwordEncoder.encode(randomPassword))
+                .attempts(0)
+                .role("utente")
+                .firstLogin(true)
+                .build();
         userRepository.save(newUser);
         return randomPassword;
     }

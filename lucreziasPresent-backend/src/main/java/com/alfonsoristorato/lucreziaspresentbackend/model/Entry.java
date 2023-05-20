@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

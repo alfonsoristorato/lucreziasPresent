@@ -9,5 +9,5 @@ public class UserException extends RuntimeException{
     public UserException(UserError error) {
         this.error = error;
     }
-    public UserError getUsererror(){return error;}
+    public UserError getError(){return error;}
 }

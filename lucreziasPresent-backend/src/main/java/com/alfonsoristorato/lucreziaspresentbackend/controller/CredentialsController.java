@@ -4,7 +4,6 @@ import com.alfonsoristorato.lucreziaspresentbackend.model.LoginRequestDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequestDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;
 import com.alfonsoristorato.lucreziaspresentbackend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,8 +17,11 @@ import java.security.Principal;
 @RequestMapping
 public class CredentialsController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public CredentialsController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody LoginRequestDTO loginRequestDTO) {
@@ -28,9 +30,9 @@ public class CredentialsController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO, Principal principal) {
-        return new ResponseEntity<>(userService.changePassword(passwordChangeRequestDTO, principal),
-                HttpStatus.OK);
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO,
+                                                 Principal principal) {
+        return new ResponseEntity<>(userService.changePassword(passwordChangeRequestDTO, principal), HttpStatus.OK);
     }
 
 }

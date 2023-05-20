@@ -1,6 +1,5 @@
-package com.alfonsoristorato.lucreziaspresentbackend.controllers;
+package com.alfonsoristorato.lucreziaspresentbackend.controller;
 
-import com.alfonsoristorato.lucreziaspresentbackend.controller.CredentialsController;
 import com.alfonsoristorato.lucreziaspresentbackend.model.LoginRequestDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.PasswordChangeRequestDTO;
 import com.alfonsoristorato.lucreziaspresentbackend.model.User;

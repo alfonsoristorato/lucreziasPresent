@@ -1,10 +1,9 @@
-package com.alfonsoristorato.lucreziaspresentbackend.services;
+package com.alfonsoristorato.lucreziaspresentbackend.service;
 
 import com.alfonsoristorato.lucreziaspresentbackend.authentication.MyUserDetails;
 import com.alfonsoristorato.lucreziaspresentbackend.exception.UserException;
 import com.alfonsoristorato.lucreziaspresentbackend.model.*;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
-import com.alfonsoristorato.lucreziaspresentbackend.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +64,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.validUsernameAndPassword("name", "password"));
 
-        Assertions.assertEquals(UserError.USER_ERROR("Credenziali non riconosciute."), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_ERROR("Credenziali non riconosciute."), ex.getError());
         verify(userRepository).findByUsername("name");
         verify(myUserDetails, never()).loadUserByUsername("name");
         verify(passwordEncoder, never()).matches(eq("password"), any());
@@ -83,7 +82,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.validUsernameAndPassword("name", "wrongPassword"));
 
-        Assertions.assertEquals(UserError.USER_ERROR("Credenziali non riconosciute."), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_ERROR("Credenziali non riconosciute."), ex.getError());
         verify(userRepository).findByUsername("name");
         verify(myUserDetails).loadUserByUsername("name");
         verify(passwordEncoder).matches("wrongPassword", user.getPassword());
@@ -101,7 +100,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.validUsernameAndPassword("name", "password"));
 
-        Assertions.assertEquals(UserError.USER_ERROR("Account bloccato, contatta l'amministratore per sbloccarlo."), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_ERROR("Account bloccato, contatta l'amministratore per sbloccarlo."), ex.getError());
         verify(userRepository).findByUsername("name");
         verify(myUserDetails).loadUserByUsername("name");
         verify(passwordEncoder, never()).matches(eq("password"), any());
@@ -134,7 +133,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.changePassword(passwordChangeRequestDTO, principal));
 
-        Assertions.assertEquals(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."), ex.getUsererror());
+        Assertions.assertEquals(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."), ex.getError());
         verify(userRepository, never()).save(any());
     }
 
@@ -151,7 +150,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.changePassword(passwordChangeRequestDTO, principal));
 
-        Assertions.assertEquals(UserError.USER_ERROR("La nuova password deve essere diversa dalla vecchia."), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_ERROR("La nuova password deve essere diversa dalla vecchia."), ex.getError());
         verify(userRepository).save(user);
     }
 
@@ -170,7 +169,7 @@ public class UserServiceTest {
                 () -> userService.changePassword(passwordChangeRequestDTO,principal));
         String exceptionMessage = "La nuova password ha una sicurezza di tipo: " + (newPassword.equals("weak") ? "'Debole'" : "'Media'")
                 + ". Riprova e assicurati che sia più sicura.";
-        Assertions.assertEquals(UserError.USER_ERROR(exceptionMessage), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_ERROR(exceptionMessage), ex.getError());
         verify(userRepository, times(1)).save(user);
     }
 
@@ -192,7 +191,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.resetUserPassword(1));
 
-        Assertions.assertEquals(UserError.USER_NOT_FOUND(), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_NOT_FOUND(), ex.getError());
         verify(userRepository, never()).save(any());
     }
 
@@ -229,7 +228,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.editUserRole(1, changeUserRoleDTO));
 
-        Assertions.assertEquals(UserError.USER_NOT_FOUND(), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_NOT_FOUND(), ex.getError());
         verify(userRepository, never()).save(any());
     }
 
@@ -256,7 +255,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.editUserAttempts(1, changeUserAttemptsDTO));
 
-        Assertions.assertEquals(UserError.USER_NOT_FOUND(), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_NOT_FOUND(), ex.getError());
         verify(userRepository, never()).save(any());
     }
 
@@ -283,7 +282,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.addUser(newUserRequestDTO));
 
-        Assertions.assertEquals(UserError.USER_ERROR("User already exists."), ex.getUsererror());
+        Assertions.assertEquals(UserError.USER_ERROR("User already exists."), ex.getError());
         verify(userRepository, never()).save(user);
     }
 }

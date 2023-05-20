@@ -16,7 +16,6 @@ public class EntryFormWrapper {
     private String title;
     private Integer icon;
     private String color;
-    private String owner;
     private LocalDate date;
     private MultipartFile file;
 }

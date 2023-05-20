@@ -1,11 +1,11 @@
 package com.alfonsoristorato.lucreziaspresentbackend.service;
 
+import com.alfonsoristorato.lucreziaspresentbackend.exception.EntryException;
 import com.alfonsoristorato.lucreziaspresentbackend.model.Entry;
+import com.alfonsoristorato.lucreziaspresentbackend.model.EntryError;
 import com.alfonsoristorato.lucreziaspresentbackend.model.EntryFormWrapper;
 import com.alfonsoristorato.lucreziaspresentbackend.repository.EntryRepository;
-import com.alfonsoristorato.lucreziaspresentbackend.utils.FileUtils;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alfonsoristorato.lucreziaspresentbackend.utils.ImageCompressor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,82 +13,81 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EntryService {
-    @Autowired
-    EntryRepository entryRepository;
+
+    private final EntryRepository entryRepository;
+    private final ImageCompressor imageCompressor;
+
+    public EntryService(EntryRepository entryRepository, ImageCompressor imageCompressor) {
+        this.entryRepository = entryRepository;
+        this.imageCompressor = imageCompressor;
+    }
 
     public List<Entry> findAll() {
-        List<Entry> entries = entryRepository.findAll();
-        entries.sort(Comparator.comparing(Entry::getDate));
-        return entries;
+        return entryRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Entry::getDate))
+                .collect(Collectors.toList());
     }
 
-    public Entry saveEntry(EntryFormWrapper entryFormWrapper, Principal user) throws IOException {
-        Entry entryToSave;
+    public void saveEntry(EntryFormWrapper entryFormWrapper, Principal user) throws IOException {
+        MultipartFile file = entryFormWrapper.getFile();
+        byte[] fileContent = (file != null && file.getContentType().equalsIgnoreCase("image/gif"))
+                ? file.getBytes()
+                : (file != null ? imageCompressor.compressImage(file) : null);
 
-        if (entryFormWrapper.getFile() != null) {
-            MultipartFile file = entryFormWrapper.getFile();
-            entryToSave = Entry.builder()
-                    .name(entryFormWrapper.getName())
-                    .content(entryFormWrapper.getContent())
-                    .title(entryFormWrapper.getTitle())
-                    .icon(entryFormWrapper.getIcon())
-                    .color(entryFormWrapper.getColor())
-                    .date(entryFormWrapper.getDate())
-                    .owner(user.getName())
-                    .file(file.getContentType().equalsIgnoreCase("image/gif")
-                            ? file.getBytes()
-                            : FileUtils.compressImage(file))
-                    .build();
-        } else {
-            entryToSave = Entry.builder()
-                    .name(entryFormWrapper.getName())
-                    .content(entryFormWrapper.getContent())
-                    .title(entryFormWrapper.getTitle())
-                    .icon(entryFormWrapper.getIcon())
-                    .color(entryFormWrapper.getColor())
-                    .date(entryFormWrapper.getDate())
-                    .owner(user.getName())
-                    .build();
-        }
-        return entryRepository.save(entryToSave);
+        Entry entry = buildEntry(entryFormWrapper, user.getName(), fileContent);
+        entryRepository.save(entry);
     }
 
-    @SneakyThrows
-    public Entry editEntry(EntryFormWrapper entryFormWrapper, Integer entryId, Principal user) {
-        Optional<Entry> entryToSave = entryRepository.findById((long) entryId);
-        if (entryToSave.isPresent()) {
-            if (entryToSave.get().getOwner().equals(user.getName())) {
-                entryToSave.get().setColor(entryFormWrapper.getColor());
-                entryToSave.get().setContent(entryFormWrapper.getContent());
-                entryToSave.get().setDate(entryFormWrapper.getDate());
-                entryToSave.get().setName(entryFormWrapper.getName());
-                entryToSave.get().setTitle(entryFormWrapper.getTitle());
-                return entryRepository.save(entryToSave.get());
-            }
-            throw new Exception("This entry belongs to another user");
-        }
-        throw new Exception("No entry with given id");
-
+    public void editEntry(EntryFormWrapper entryFormWrapper, Integer entryId, Principal user) {
+        entryRepository.findById((long) entryId)
+                .map(entry -> {
+                    checkEntryBelongsToCaller(entry, user);
+                    entry.setColor(entryFormWrapper.getColor());
+                    entry.setContent(entryFormWrapper.getContent());
+                    entry.setDate(entryFormWrapper.getDate());
+                    entry.setName(entryFormWrapper.getName());
+                    entry.setTitle(entryFormWrapper.getTitle());
+                    return entry;
+                })
+                .ifPresentOrElse(
+                        entryRepository::save,
+                        () -> {
+                            throw new EntryException(EntryError.ENTRY_NOT_FOUND());
+                        }
+                );
     }
 
-    @SneakyThrows
     public void deleteEntry(Integer entryId, Principal user) {
-        Optional<Entry> entryToSave = entryRepository.findById((long) entryId);
-        if (entryToSave.isPresent()) {
+        entryRepository.findById((long) entryId)
+                .ifPresentOrElse(entry -> {
+                    checkEntryBelongsToCaller(entry, user);
+                    entryRepository.deleteById((long) entryId);
+                }, () -> {
+                    throw new EntryException(EntryError.ENTRY_NOT_FOUND());
+                });
+    }
 
-            if (entryToSave.get().getOwner().equals(user.getName())) {
+    private Entry buildEntry(EntryFormWrapper form, String owner, byte[] fileContent) {
+        return Entry.builder()
+                .name(form.getName())
+                .content(form.getContent())
+                .title(form.getTitle())
+                .icon(form.getIcon())
+                .color(form.getColor())
+                .date(form.getDate())
+                .owner(owner)
+                .file(fileContent)
+                .build();
+    }
 
-                entryRepository.deleteById((long) entryId);
-            } else {
-                throw new Exception("This entry belongs to another user");
-            }
-        } else {
-            throw new Exception("No entry with given id");
+    private void checkEntryBelongsToCaller(Entry entry, Principal user) {
+        if (!entry.getOwner().equals(user.getName())) {
+            throw new EntryException(EntryError.ENTRY_ERROR("This entry belongs to another user"));
         }
-
     }
 }

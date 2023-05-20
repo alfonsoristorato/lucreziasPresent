@@ -3,8 +3,6 @@ package com.alfonsoristorato.lucreziaspresentbackend.controller;
 import com.alfonsoristorato.lucreziaspresentbackend.model.Entry;
 import com.alfonsoristorato.lucreziaspresentbackend.model.EntryFormWrapper;
 import com.alfonsoristorato.lucreziaspresentbackend.service.EntryService;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,34 +17,33 @@ import java.util.List;
 @RequestMapping(path = "/entry")
 @PreAuthorize("principal.user.firstLogin == false")
 public class EntryController {
+    private final EntryService entryService;
 
-    @Autowired
-    private EntryService entryService;
+    public EntryController(EntryService entryService) {
+        this.entryService = entryService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<Entry>> findAllEntries() throws IOException {
+    public ResponseEntity<List<Entry>> findAllEntries() {
         return new ResponseEntity<>(entryService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Entry> addEntry(@ModelAttribute EntryFormWrapper entry, Principal user)
+    public ResponseEntity<Void> addEntry(@ModelAttribute EntryFormWrapper entry, Principal user)
             throws IOException {
-        return new ResponseEntity<>(entryService.saveEntry(entry, user), HttpStatus.CREATED);
+        entryService.saveEntry(entry, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @SneakyThrows
     @PatchMapping("/{entryId}")
     public ResponseEntity<Entry> editEntry(@ModelAttribute EntryFormWrapper entry,
-            @PathVariable Integer entryId, Principal user)
-            throws IOException {
-        return new ResponseEntity<>(entryService.editEntry(entry, entryId, user), HttpStatus.CREATED);
+                                           @PathVariable Integer entryId, Principal user) {
+        entryService.editEntry(entry, entryId, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @SneakyThrows
     @DeleteMapping("/{entryId}")
-    public ResponseEntity<String> deleteEntry(
-            @PathVariable Integer entryId, Principal user)
-            throws IOException {
+    public ResponseEntity<Void> deleteEntry(@PathVariable Integer entryId, Principal user) {
         entryService.deleteEntry(entryId, user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
