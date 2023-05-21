@@ -41,6 +41,9 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+      - name: Run backend unit Tests
+        run: gradle test
+
       - name: Start app for functional tests
         working-directory: ./
         run: ./start-app-for-func-tests.sh -d '${{ secrets.TEST_USERS_PASSWORD }}'
