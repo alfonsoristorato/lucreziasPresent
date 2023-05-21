@@ -1,6 +1,8 @@
 app:
-  url: http://localhost:8080
+  url: http://localhost:8081
+server:
+  port: 8081
 spring:
   datasource:
     driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mysql:8.0:///lucreziasPresent?serverTimezone=UTC&TC_REUSABLE=true
+    url: jdbc:tc:mysql:8.0:///lucreziasPresentTest?serverTimezone=UTC&TC_REUSABLE=true

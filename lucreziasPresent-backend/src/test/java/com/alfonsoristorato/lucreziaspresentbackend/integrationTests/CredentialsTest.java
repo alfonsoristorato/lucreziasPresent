@@ -12,7 +12,7 @@ public class CredentialsTest extends IntegrationTestsConfig {
     private HttpClient client;
 
     @Test
-    public void getAllTests_success() {
+    public void login() {
         Map<String, String> body = Map.of("username", "admin", "password", "defaultPass");
         client.request()
                 .body(body)

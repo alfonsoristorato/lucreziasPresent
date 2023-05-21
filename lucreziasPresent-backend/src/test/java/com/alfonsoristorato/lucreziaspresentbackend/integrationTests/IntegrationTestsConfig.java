@@ -4,7 +4,7 @@ import com.alfonsoristorato.lucreziaspresentbackend.LucreziasPresentBackendAppli
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(classes = LucreziasPresentBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = LucreziasPresentBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("integration")
 public abstract class IntegrationTestsConfig {
 }
