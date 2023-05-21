@@ -1,6 +1,7 @@
 package com.alfonsoristorato.lucreziaspresentbackend.security;
 
 import com.alfonsoristorato.lucreziaspresentbackend.authentication.MyUserDetailsService;
+import com.alfonsoristorato.lucreziaspresentbackend.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,9 +17,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfiguration {
+    private final UserRepository userRepository;
+
+    public WebSecurityConfiguration(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Bean
     public UserDetailsService userDetailsService() {
-        return new MyUserDetailsService();
+        return new MyUserDetailsService(userRepository);
     }
 
     @Bean
