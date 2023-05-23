@@ -19,34 +19,34 @@ public class HttpClient {
 
     public void resetSpecification() {
         requestSpecBuilder = new RequestSpecBuilder();
-        requestSpecBuilder.setBaseUri(baseUri).addHeader("Content-Type","application/json");
+        requestSpecBuilder.setBaseUri(baseUri).addHeader("Content-Type", "application/json");
     }
 
-    public Response sendGetRequest(String endpoint, Map<String,String> headers) {
+    public Response sendGetRequest(String endpoint, Map<String, String> headers) {
         resetSpecification();
         RequestSpecification requestSpecification = requestSpecBuilder.build().headers(headers);
         return given(requestSpecification).get(endpoint);
     }
 
-    public Response sendPostRequest(String endpoint, Map<String,String> headers, String body) {
+    public Response sendPostRequest(String endpoint, Map<String, String> headers, String body) {
         resetSpecification();
         RequestSpecification requestSpecification = requestSpecBuilder.build().headers(headers).body(body);
         return given(requestSpecification).post(endpoint);
     }
 
-    public Response sendPatchRequest(String endpoint, Map<String,String> headers, String body, String pathParams) {
+    public Response sendPatchRequest(String endpoint, Map<String, String> headers, String body, String pathParams) {
         resetSpecification();
         RequestSpecification requestSpecification = requestSpecBuilder.build().headers(headers).body(body);
-        return given(requestSpecification).patch(endpoint,pathParams);
+        return given(requestSpecification).patch(endpoint, pathParams);
     }
 
     public void addHeader(String header, String value) {
         requestSpecBuilder.addHeader(header, value);
     }
 
-    public void addAuthorizationHeader(String username, String password, Map<String,String> headers) {
+    public void addAuthorizationHeader(String username, String password, Map<String, String> headers) {
         String encodedToken =
                 Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-        headers.put("Authorization", "Basic " + encodedToken);
+        headers.put("Authorization", String.format("Basic %s", encodedToken));
     }
 }
