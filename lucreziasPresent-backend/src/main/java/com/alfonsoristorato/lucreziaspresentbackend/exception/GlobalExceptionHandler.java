@@ -5,8 +5,10 @@ import com.alfonsoristorato.lucreziaspresentbackend.model.UserError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
 
 @Slf4j
 @ControllerAdvice
@@ -14,7 +16,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> defaultExceptions(Exception ex) {
         log.error("Caught the following exception: {} with message: {}", ex.getClass(), ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Unexpected Error.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UserException.class)
@@ -35,5 +37,11 @@ public class GlobalExceptionHandler {
             httpStatus = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity<>(ex.getError(), httpStatus);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> accessDeniedException(AccessDeniedException ex) {
+        log.error("Caught the following exception: {} with message: {}", ex.getClass(), ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 }

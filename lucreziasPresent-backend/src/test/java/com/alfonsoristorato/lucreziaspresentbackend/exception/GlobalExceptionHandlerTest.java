@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.stream.Stream;
 
@@ -24,8 +25,15 @@ public class GlobalExceptionHandlerTest {
     @Test
     void defaultExceptions_catchesAllExceptions(){
         ResponseEntity<String> response = globalExceptionHandler.defaultExceptions(new Exception("I threw"));
-        Assertions.assertThat(response.getBody()).isEqualTo("I threw");
+        Assertions.assertThat(response.getBody()).isEqualTo("Unexpected Error.");
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    void accessDeniedException_catchesAllAccessDeniedException(){
+        ResponseEntity<String> response = globalExceptionHandler.accessDeniedException(new AccessDeniedException("Access denied"));
+        Assertions.assertThat(response.getBody()).isEqualTo("Access denied");
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @ParameterizedTest

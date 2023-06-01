@@ -5,7 +5,7 @@ Feature: User Controller Features
     Given The next request contains the following path parameters: "<pathParams>"
     When Client makes a "<verb>" request to "<endpoint>" endpoint
       | "" | "" |
-    Then Client receives a status code of 500
+    Then Client receives a status code of 403
     And The response has the following text: "Access Denied"
     Examples:
       | verb  | endpoint            | pathParams        |
@@ -20,7 +20,7 @@ Feature: User Controller Features
     Given The next request contains the following path parameters: "<pathParams>"
     When Client makes a "<verb>" request to "<endpoint>" endpoint
       | "" | "" |
-    Then Client receives a status code of 500
+    Then Client receives a status code of 403
     And The response has the following text: "Access Denied"
     Examples:
       | verb  | endpoint            | pathParams        |

@@ -28,7 +28,7 @@ public class CorsAndWebSecurityTests extends IntegrationTestsConfig {
                 Arguments.of("PATCH", "/user/role/110"),
                 Arguments.of("PATCH", "/user/attempts/110"),
                 Arguments.of("POST", "/user"),
-                Arguments.of("DELETE", "/user/reset-password/110")
+                Arguments.of("PATCH", "/user/reset-password/110")
         );
     }
 
@@ -60,7 +60,8 @@ public class CorsAndWebSecurityTests extends IntegrationTestsConfig {
                     .when()
                     .post("/login")
                     .then()
-                    .statusCode(500);
+                    .statusCode(500)
+                    .body(equalTo("Unexpected Error."));
         }
     }
 
