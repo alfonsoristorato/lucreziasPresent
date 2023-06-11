@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,11 +34,11 @@ public class EntryService {
                 .collect(Collectors.toList());
     }
 
-    public void saveEntry(EntryFormWrapper entryFormWrapper, Principal user) throws IOException {
-        MultipartFile file = entryFormWrapper.getFile();
-        byte[] fileContent = (file != null && file.getContentType().equalsIgnoreCase("image/gif"))
-                ? file.getBytes()
-                : (file != null ? imageCompressor.compressImage(file) : null);
+    public void saveEntry(EntryFormWrapper entryFormWrapper, Principal user) {
+        Optional<MultipartFile> file = Optional.ofNullable(entryFormWrapper.getFile());
+        byte[] fileContent = file
+                .flatMap(this::checkFileTypeIsSupportedAndReturnBytes)
+                .orElse(null);
 
         Entry entry = buildEntry(entryFormWrapper, user.getName(), fileContent);
         entryRepository.save(entry);
@@ -90,4 +91,26 @@ public class EntryService {
             throw new EntryException(EntryError.ENTRY_ERROR("This entry belongs to another user"));
         }
     }
+
+    private Optional<byte[]> checkFileTypeIsSupportedAndReturnBytes(MultipartFile file) {
+        List<String> acceptedContentTypes = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+
+        if (acceptedContentTypes.contains(file.getContentType())) {
+            try {
+                if (file.getContentType().equalsIgnoreCase("image/gif")) {
+                    return Optional.of(file.getBytes());
+                } else {
+                    return Optional.of(imageCompressor.compressImage(file));
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new EntryException(EntryError.ENTRY_ERROR("File type not accepted."));
+        }
+
+
+    }
+
+
 }

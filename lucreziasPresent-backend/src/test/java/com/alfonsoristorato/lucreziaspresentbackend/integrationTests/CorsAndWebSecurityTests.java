@@ -68,7 +68,6 @@ public class CorsAndWebSecurityTests extends IntegrationTestsConfig {
     @Nested
     @DisplayName("CORS tests")
     class corsTests {
-
         @ParameterizedTest
         @MethodSource("com.alfonsoristorato.lucreziaspresentbackend.integrationTests.CorsAndWebSecurityTests#allEndpoints")
         @DisplayName("CORS:: blocks requests from non-allowed origin")

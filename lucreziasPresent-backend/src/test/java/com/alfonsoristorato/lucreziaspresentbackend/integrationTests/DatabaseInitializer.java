@@ -31,7 +31,7 @@ public class DatabaseInitializer {
                     PRIMARY KEY (id),
                     UNIQUE KEY UK_sb8bbouer5wak8vyiiy4pf2bx (username)
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-                                """,
+                    """,
             "DELETE FROM user WHERE id BETWEEN 101 AND 110;",
             "INSERT INTO user (id, username, attempts, first_login, password, role) VALUES (101,'admin', 0, 0, @password, 'admin');",
             "INSERT INTO user (id, username, attempts, first_login, password, role) VALUES (102, 'user', 0, 0, @password, 'user');",

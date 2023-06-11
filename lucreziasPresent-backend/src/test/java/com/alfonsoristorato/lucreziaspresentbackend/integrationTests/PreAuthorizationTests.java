@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -43,9 +42,7 @@ public class PreAuthorizationTests extends IntegrationTestsConfig {
     @MethodSource("endpointsThatRequireFirstLoginFalseOnly")
     @DisplayName("Pre Authorization:: blocks requests to certain endpoints if user logged in has not changed the default Password")
     void preAuthorization_blocksRequestsForAuthenticatedUsersIfDefaultPasswordNotChanged(String method, String endpoint) {
-        Map<String, String> headers = client.createAuthorizationHeader("userFirstLogin", "defaultPass");
-
-        requestSpecification(endpoint, headers)
+        requestSpecification(endpoint, "userFirstLogin")
                 .when()
                 .request(method, endpoint)
                 .then()
@@ -57,9 +54,7 @@ public class PreAuthorizationTests extends IntegrationTestsConfig {
     @MethodSource("endpointsThatRequireFirstLoginFalseAndAdmin")
     @DisplayName("Pre Authorization:: blocks requests to certain endpoints if user logged in is not an admin")
     void preAuthorization_blocksRequestsForAuthenticatedUsersIfTryingToAccessAdminOnlyEndpoints(String method, String endpoint) {
-        Map<String, String> headers = client.createAuthorizationHeader("user", "defaultPass");
-
-        requestSpecification(endpoint, headers)
+        requestSpecification(endpoint, "user")
                 .when()
                 .request(method, endpoint)
                 .then()
@@ -71,9 +66,7 @@ public class PreAuthorizationTests extends IntegrationTestsConfig {
     @MethodSource("endpointsThatRequireFirstLoginFalseAndAdmin")
     @DisplayName("Pre Authorization:: blocks requests to certain endpoints if admin logged has not changed the default Password")
     void preAuthorization_blocksRequestsForAuthenticatedAdminIfDefaultPasswordNotChanged(String method, String endpoint) {
-        Map<String, String> headers = client.createAuthorizationHeader("adminFirstLogin", "defaultPass");
-
-        requestSpecification(endpoint, headers)
+        requestSpecification(endpoint, "adminFirstLogin")
                 .when()
                 .request(method, endpoint)
                 .then()
@@ -81,8 +74,10 @@ public class PreAuthorizationTests extends IntegrationTestsConfig {
                 .body(equalTo("Access Denied"));
     }
 
-    private RequestSpecification requestSpecification(String endpoint, Map<String, String> headers) {
-        RequestSpecification requestSpecification = client.request().headers(headers);
+    private RequestSpecification requestSpecification(String endpoint, String username) {
+        RequestSpecification requestSpecification = client.request()
+                .auth()
+                .basic(username, "defaultPass");
         switch (endpoint) {
             case "/user/role/110" ->
                     requestSpecification = requestSpecification.body(new ChangeUserRoleDTO("doesNotMatter"));

@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -64,16 +63,16 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
             LoginRequestDTO requestBody = new LoginRequestDTO("userToLock", "wrongPassword");
             IntStream.rangeClosed(1, 4).forEach(repetition ->
                     client.request()
-                    .body(requestBody)
-                    .when()
-                    .post("/login")
-                    .then()
-                    .statusCode(500)
-                    .body(
-                            "size()", equalTo(2),
-                            "description", equalTo("User error"),
-                            "details", equalTo("Credenziali non riconosciute.")
-                    ));
+                            .body(requestBody)
+                            .when()
+                            .post("/login")
+                            .then()
+                            .statusCode(500)
+                            .body(
+                                    "size()", equalTo(2),
+                                    "description", equalTo("User error"),
+                                    "details", equalTo("Credenziali non riconosciute.")
+                            ));
             client.request()
                     .body(requestBody)
                     .when()
@@ -98,11 +97,11 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
         @Order(1)
         @DisplayName("Change Password:: right credentials, valid new password")
         void changePassword_withRightCredentials_andValidNewPassword() {
-            Map<String, String> headers = client.createAuthorizationHeader("userPassChange", "defaultPass");
             PasswordChangeRequestDTO requestBody = new PasswordChangeRequestDTO("userPassChange", "defaultPass", "newPassword123*!");
 
             client.request()
-                    .headers(headers)
+                    .auth()
+                    .basic("userPassChange", "defaultPass")
                     .body(requestBody)
                     .when()
                     .post("/change-password")
@@ -116,11 +115,11 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
         @Test
         @DisplayName("Change Password:: right credentials, valid new password, different user in body")
         void changePassword_withRightCredentials_andValidNewPassword_differentUserInBody() {
-            Map<String, String> headers = client.createAuthorizationHeader("userPassChange", "newPassword123*!");
             PasswordChangeRequestDTO requestBody = new PasswordChangeRequestDTO("notTheSameUser", "defaultPass", "newPassword123*!");
 
             client.request()
-                    .headers(headers)
+                    .auth()
+                    .basic("userPassChange", "newPassword123*!")
                     .body(requestBody)
                     .when()
                     .post("/change-password")
@@ -136,11 +135,11 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
         @Test
         @DisplayName("Change Password:: right credentials, new password same as old")
         void changePassword_withRightCredentials_newPasswordSameAsOld() {
-            Map<String, String> headers = client.createAuthorizationHeader("userPassChange", "newPassword123*!");
             PasswordChangeRequestDTO requestBody = new PasswordChangeRequestDTO("userPassChange", "newPassword123*!", "newPassword123*!");
 
             client.request()
-                    .headers(headers)
+                    .auth()
+                    .basic("userPassChange", "newPassword123*!")
                     .body(requestBody)
                     .when()
                     .post("/change-password")
@@ -157,12 +156,12 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
         @ValueSource(strings = {"weak", "mediumPass"})
         @DisplayName("Change Password:: right credentials, new password not strong")
         void changePassword_withRightCredentials_newPasswordNotStrong(String newPass) {
-            Map<String, String> headers = client.createAuthorizationHeader("userPassChange", "newPassword123*!");
             PasswordChangeRequestDTO requestBody = new PasswordChangeRequestDTO("userPassChange", "newPassword123*!", newPass);
             String newPasswordStrength = newPass.equals("weak") ? "'Debole'" : "'Media'";
 
             client.request()
-                    .headers(headers)
+                    .auth()
+                    .basic("userPassChange", "newPassword123*!")
                     .body(requestBody)
                     .when()
                     .post("/change-password")
@@ -178,11 +177,11 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
         @Test
         @DisplayName("Change Password:: right credentials, old Password not valid")
         void changePassword_withRightCredentials_oldPasswordNotValid() {
-            Map<String, String> headers = client.createAuthorizationHeader("userPassChange", "newPassword123*!");
             PasswordChangeRequestDTO requestBody = new PasswordChangeRequestDTO("userPassChange", "notValid", "notMatter");
 
             client.request()
-                    .headers(headers)
+                    .auth()
+                    .basic("userPassChange", "newPassword123*!")
                     .body(requestBody)
                     .when()
                     .post("/change-password")
