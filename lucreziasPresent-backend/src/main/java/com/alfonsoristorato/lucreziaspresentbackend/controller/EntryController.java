@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -30,8 +29,7 @@ public class EntryController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addEntry(@Valid @ModelAttribute EntryFormWrapper entry, Principal user)
-            throws IOException {
+    public ResponseEntity<Void> addEntry(@Valid @ModelAttribute EntryFormWrapper entry, Principal user) {
         entryService.saveEntry(entry, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

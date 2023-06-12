@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
 public class EntryApiTest extends IntegrationTestsConfig {
@@ -42,6 +43,27 @@ public class EntryApiTest extends IntegrationTestsConfig {
             add("date", "2023-10-10");
         }
     };
+
+    @Nested
+    @DisplayName("Entry endpoint:: GET /entry")
+    class findAllEntriesTest {
+        @Test
+        @DisplayName("GET /entry")
+        void findAllEntries_returns200AndAnOrderedByDateListOfEntries() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .get("/entry")
+                    .then()
+                    .statusCode(200)
+                    .body("size()", equalTo(2),
+                            "[0].id", equalTo(2),
+                            "[1].id", equalTo(1),
+                            "[0].date", equalTo("2023-02-10"),
+                            "[1].date", equalTo("2023-10-10"));
+        }
+    }
 
     @Nested
     @DisplayName("Entry endpoint:: POST /entry")
