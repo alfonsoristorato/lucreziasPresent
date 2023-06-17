@@ -31,25 +31,25 @@ Feature: Credentials Controller Features
       | username | userToLock    |
       | password | wrongPassword |
     And The response has the following properties
-      | description | User error                  |
+      | description | User error                    |
       | details     | Credenziali non riconosciute. |
     When Client makes a "POST" request to "login" endpoint with the following body
       | username | userToLock    |
       | password | wrongPassword |
     And The response has the following properties
-      | description | User error                  |
+      | description | User error                    |
       | details     | Credenziali non riconosciute. |
     When Client makes a "POST" request to "login" endpoint with the following body
       | username | userToLock    |
       | password | wrongPassword |
     And The response has the following properties
-      | description | User error                  |
+      | description | User error                    |
       | details     | Credenziali non riconosciute. |
     When Client makes a "POST" request to "login" endpoint with the following body
       | username | userToLock    |
       | password | wrongPassword |
     And The response has the following properties
-      | description | User error                  |
+      | description | User error                    |
       | details     | Credenziali non riconosciute. |
     When Client makes a "POST" request to "login" endpoint with the following body
       | username | userToLock    |
@@ -64,7 +64,7 @@ Feature: Credentials Controller Features
       | password | <password> |
     Then Client receives a status code of 500
     And The response has the following properties
-      | description | User error                                     |
+      | description | User error                                                  |
       | details     | Account bloccato, contatta l'amministratore per sbloccarlo. |
     Examples:
       | username    | password    |
@@ -141,8 +141,8 @@ Feature: Credentials Controller Features
       | username    | user        |
       | password    | defaultPass |
       | newPassword | newPass     |
-    Then Client receives a status code of 500
+    Then Client receives a status code of 403
     And The response has the following properties
-      | description | Disallowed change                                |
+      | description | User error                                       |
       | details     | You cannot change the password for another user. |
 

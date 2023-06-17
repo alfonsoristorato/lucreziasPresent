@@ -70,7 +70,7 @@ public class EntryServiceTest {
     }
 
     @Test
-    void saveEntry_savesAnEntryWithDataFromParams_andFileIsNullIfNotPresentInParams() throws IOException {
+    void saveEntry_savesAnEntryWithDataFromParams_andFileIsNullIfNotPresentInParams() {
         when(principal.getName()).thenReturn("owner");
 
         entryService.saveEntry(genericEntryForm, principal);
@@ -122,6 +122,24 @@ public class EntryServiceTest {
         verify(entryRepository).save(entryCaptor.capture());
         Entry capturedEntry = entryCaptor.getValue();
         Assertions.assertThat(entryExpected).isEqualTo(capturedEntry);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "file.mp4, video/mp4",
+            "file.mp3, audio/mpeg3"
+    })
+    void saveEntry_throwsExceptionIfFileIsNotSupported(String fileName, String contentType) {
+        MockMultipartFile mockMultipartFile =
+                new MockMultipartFile("file", fileName, contentType, "nonCompressedImage".getBytes());
+        EntryFormWrapper entryFormWrapper = genericEntryForm;
+        entryFormWrapper.setFile(mockMultipartFile);
+
+        EntryException exception = Assertions.catchThrowableOfType(() -> entryService.saveEntry(entryFormWrapper, principal), EntryException.class);
+
+        Assertions.assertThat(exception).isInstanceOf(EntryException.class);
+        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("File type not accepted."));
+        verify(entryRepository, never()).save(any());
     }
 
     @Test
@@ -180,7 +198,7 @@ public class EntryServiceTest {
 
         EntryException exception = Assertions.catchThrowableOfType(() -> entryService.editEntry(genericEntryForm, 1, principal), EntryException.class);
         Assertions.assertThat(exception).isInstanceOf(EntryException.class);
-        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user"));
+        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user."));
         verify(entryRepository, never()).save(any());
 
     }
@@ -236,7 +254,7 @@ public class EntryServiceTest {
         EntryException exception = Assertions.catchThrowableOfType(() -> entryService.deleteEntry(1, principal), EntryException.class);
 
         Assertions.assertThat(exception).isInstanceOf(EntryException.class);
-        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user"));
+        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user."));
         verify(entryRepository, never()).deleteById(any());
     }
 }

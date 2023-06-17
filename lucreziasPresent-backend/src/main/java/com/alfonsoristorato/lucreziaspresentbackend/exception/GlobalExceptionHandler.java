@@ -26,6 +26,9 @@ public class GlobalExceptionHandler {
         if(ex.getError().equals(UserError.USER_NOT_FOUND())){
             httpStatus = HttpStatus.NOT_FOUND;
         }
+        if(ex.getError().equals(UserError.DISALLOWED_CHANGE())){
+            httpStatus = HttpStatus.FORBIDDEN;
+        }
         return new ResponseEntity<>(ex.getError(), httpStatus);
     }
 
@@ -35,6 +38,9 @@ public class GlobalExceptionHandler {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         if(ex.getError().equals(EntryError.ENTRY_NOT_FOUND())){
             httpStatus = HttpStatus.NOT_FOUND;
+        }
+        if(ex.getError().equals(EntryError.DISALLOWED_CHANGE())){
+            httpStatus = HttpStatus.FORBIDDEN;
         }
         return new ResponseEntity<>(ex.getError(), httpStatus);
     }

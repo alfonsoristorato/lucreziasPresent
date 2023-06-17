@@ -19,6 +19,7 @@ services:
       retries: 120
 
   backend:
+    platform: linux/amd64
     depends_on:
       mysqldb-func:
         condition: service_healthy

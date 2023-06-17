@@ -3,13 +3,13 @@ package com.alfonsoristorato.lucreziaspresentbackend.controller;
 import com.alfonsoristorato.lucreziaspresentbackend.model.Entry;
 import com.alfonsoristorato.lucreziaspresentbackend.model.EntryFormWrapper;
 import com.alfonsoristorato.lucreziaspresentbackend.service.EntryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -29,17 +29,16 @@ public class EntryController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addEntry(@ModelAttribute EntryFormWrapper entry, Principal user)
-            throws IOException {
+    public ResponseEntity<Void> addEntry(@Valid @ModelAttribute EntryFormWrapper entry, Principal user) {
         entryService.saveEntry(entry, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PatchMapping("/{entryId}")
-    public ResponseEntity<Entry> editEntry(@ModelAttribute EntryFormWrapper entry,
+    public ResponseEntity<Void> editEntry(@Valid @ModelAttribute EntryFormWrapper entry,
                                            @PathVariable Integer entryId, Principal user) {
         entryService.editEntry(entry, entryId, user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{entryId}")

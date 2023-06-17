@@ -56,7 +56,7 @@ public class UserService {
 
     public String changePassword(PasswordChangeRequestDTO passwordChangeRequestDTO, Principal principal) {
         if (!passwordChangeRequestDTO.getUsername().equals(principal.getName())) {
-            throw new UserException(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."));
+            throw new UserException(UserError.DISALLOWED_CHANGE());
         }
         User user = validUsernameAndPassword(passwordChangeRequestDTO.getUsername(),
                 passwordChangeRequestDTO.getPassword());
