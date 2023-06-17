@@ -88,7 +88,7 @@ public class EntryService {
 
     private void checkEntryBelongsToCaller(Entry entry, Principal user) {
         if (!entry.getOwner().equals(user.getName())) {
-            throw new EntryException(EntryError.ENTRY_ERROR("This entry belongs to another user"));
+            throw new EntryException(EntryError.DISALLOWED_CHANGE());
         }
     }
 

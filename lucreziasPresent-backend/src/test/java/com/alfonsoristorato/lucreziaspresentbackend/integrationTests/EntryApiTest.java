@@ -1,9 +1,7 @@
 package com.alfonsoristorato.lucreziaspresentbackend.integrationTests;
 
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,7 @@ import java.nio.file.Files;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 public class EntryApiTest extends IntegrationTestsConfig {
 
     @Autowired
@@ -46,6 +45,7 @@ public class EntryApiTest extends IntegrationTestsConfig {
 
     @Nested
     @DisplayName("Entry endpoint:: GET /entry")
+    @Order(1)
     class findAllEntriesTest {
         @Test
         @DisplayName("GET /entry")
@@ -112,7 +112,7 @@ public class EntryApiTest extends IntegrationTestsConfig {
         }
 
         @Test
-        @DisplayName("POST /entry without form throws an Exception")
+        @DisplayName("POST /entry without form")
         void addEntry_returns500IfNoFormIsPassed() {
             client.request()
                     .auth()
@@ -125,7 +125,7 @@ public class EntryApiTest extends IntegrationTestsConfig {
         }
 
         @ParameterizedTest
-        @DisplayName("POST /entry with form and non-supported file throws an Exception")
+        @DisplayName("POST /entry with form and non-supported file")
         @CsvSource({
                 "file.mp4, video/mp4",
                 "file.mp3, audio/mpeg3"
@@ -144,7 +144,7 @@ public class EntryApiTest extends IntegrationTestsConfig {
         }
 
         @Test
-        @DisplayName("POST /entry with incomplete form throws an Exception")
+        @DisplayName("POST /entry with incomplete form")
         void addEntry_returns500IfFormPassedIsIncomplete() {
             client.request()
                     .auth()
@@ -155,6 +155,26 @@ public class EntryApiTest extends IntegrationTestsConfig {
                     .multiPart("title", formParamsWithoutFileMultiMap.get("title").get(0))
                     .multiPart("icon", formParamsWithoutFileMultiMap.get("icon").get(0))
                     .multiPart("color", formParamsWithoutFileMultiMap.get("color").get(0))
+                    .when()
+                    .post("/entry")
+                    .then()
+                    .statusCode(500)
+                    .body(Matchers.equalTo("Unexpected Error."));
+        }
+
+        @Test
+        @DisplayName("POST /entry with complete and incorrect form")
+        void addEntry_returns500IfFormPassedIsCompleteButIncorrect() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .multiPart("name", formParamsWithoutFileMultiMap.get("name").get(0))
+                    .multiPart("content", formParamsWithoutFileMultiMap.get("content").get(0))
+                    .multiPart("title", formParamsWithoutFileMultiMap.get("title").get(0))
+                    .multiPart("icon", "notAnInteger")
+                    .multiPart("color", formParamsWithoutFileMultiMap.get("color").get(0))
+                    .multiPart("date", formParamsWithoutFileMultiMap.get("date").get(0))
                     .when()
                     .post("/entry")
                     .then()
@@ -178,7 +198,172 @@ public class EntryApiTest extends IntegrationTestsConfig {
 
             return imageFile;
         }
+    }
 
+    @Nested
+    @DisplayName("Entry endpoint:: PATCH /entry/{entryId}")
+    @Order(2)
+    class editEntryTest {
+        @Test
+        @DisplayName("PATCH /entry/{entryId} with complete and correct form and patching an entry that belongs to the logged in user")
+        void editEntry_returns204IfCorrectAndCompleteFormIsPassed() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .multiPart("name", "newName")
+                    .multiPart("content", "newContent")
+                    .multiPart("title", "newTitle")
+                    .multiPart("icon", "5")
+                    .multiPart("color", "green")
+                    .multiPart("date", "2023-02-05")
+                    .patch("/entry/{entryId}", 1)
+                    .then()
+                    .statusCode(204)
+                    .body(Matchers.blankOrNullString());
+        }
+
+        @Test
+        @DisplayName("PATCH /entry/{entryId} with complete and correct form and patching an entry that does not belong to the logged in user")
+        void editEntry_returns403IfCorrectFormIsPassedButPathParamsLeadToAnotherUserEntry() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .multiPart("name", "newName")
+                    .multiPart("content", "newContent")
+                    .multiPart("title", "newTitle")
+                    .multiPart("icon", "5")
+                    .multiPart("color", "green")
+                    .multiPart("date", "2023-02-05")
+                    .patch("/entry/{entryId}", 2)
+                    .then()
+                    .statusCode(403)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Entry error"),
+                            "details", equalTo("This entry belongs to another user.")
+                    );
+        }
+
+        @Test
+        @DisplayName("PATCH /entry/{entryId} with incomplete and correct form and patching an entry that belongs to the logged in user")
+        void editEntry_returns500IfIncompleteFormIsPassed() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .multiPart("content", "newContent")
+                    .multiPart("title", "newTitle")
+                    .multiPart("icon", "5")
+                    .multiPart("color", "green")
+                    .multiPart("date", "2023-02-05")
+                    .patch("/entry/{entryId}", 1)
+                    .then()
+                    .statusCode(500)
+                    .body(equalTo("Unexpected Error.")
+                    );
+        }
+
+        @Test
+        @DisplayName("PATCH /entry/{entryId} with complete and incorrect form and patching an entry that belongs to the logged in user")
+        void editEntry_returns500IfCompleteAndIncorrectFormIsPassed() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .multiPart("name", "newName")
+                    .multiPart("content", "newContent")
+                    .multiPart("title", "newTitle")
+                    .multiPart("icon", "notAnInteger")
+                    .multiPart("color", "green")
+                    .multiPart("date", "2023-02-05")
+                    .patch("/entry/{entryId}", 1)
+                    .then()
+                    .statusCode(500)
+                    .body(equalTo("Unexpected Error.")
+                    );
+        }
+
+        @Test
+        @DisplayName("PATCH /entry/{entryId} with complete and correct form and patching an entry that does not exist")
+        void editEntry_returns404IfEntryDoesNotExist() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .multiPart("name", "newName")
+                    .multiPart("content", "newContent")
+                    .multiPart("title", "newTitle")
+                    .multiPart("icon", "5")
+                    .multiPart("color", "green")
+                    .multiPart("date", "2023-02-05")
+                    .patch("/entry/{entryId}", 3)
+                    .then()
+                    .statusCode(404)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Entry error"),
+                            "details", equalTo("Entry not found.")
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("Entry endpoint:: DELETE /entry/{entryId}")
+    @Order(3)
+    class deleteEntryTest {
+        @Test
+        @DisplayName("DELETE /entry/{entryId} deleting an entry that belongs to the logged in user")
+        void deleteEntry_returns204IfEntryBelongsToLoggedInUser() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .delete("/entry/{entryId}", 1)
+                    .then()
+                    .statusCode(204)
+                    .body(Matchers.blankOrNullString());
+        }
+
+        @Test
+        @DisplayName("DELETE /entry/{entryId} deleting an entry that does not belong to the logged in user")
+        void editEntry_returns403IfEntryDoesNotBelongToLoggedInUser() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .delete("/entry/{entryId}", 2)
+                    .then()
+                    .statusCode(403)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Entry error"),
+                            "details", equalTo("This entry belongs to another user.")
+                    );
+        }
+
+        @Test
+        @DisplayName("DELETE /entry/{entryId} deleting an entry that does not exist")
+        void editEntry_returns404IfEntryDoesNotExist() {
+            client.request()
+                    .auth()
+                    .basic("user", "defaultPass")
+                    .when()
+                    .delete("/entry/{entryId}", 9999)
+                    .then()
+                    .statusCode(404)
+                    .body(
+                            "size()", equalTo(2),
+                            "description", equalTo("Entry error"),
+                            "details", equalTo("Entry not found.")
+                    );
+        }
     }
 
 

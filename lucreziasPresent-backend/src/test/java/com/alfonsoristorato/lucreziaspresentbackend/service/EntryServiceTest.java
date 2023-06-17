@@ -198,7 +198,7 @@ public class EntryServiceTest {
 
         EntryException exception = Assertions.catchThrowableOfType(() -> entryService.editEntry(genericEntryForm, 1, principal), EntryException.class);
         Assertions.assertThat(exception).isInstanceOf(EntryException.class);
-        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user"));
+        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user."));
         verify(entryRepository, never()).save(any());
 
     }
@@ -254,7 +254,7 @@ public class EntryServiceTest {
         EntryException exception = Assertions.catchThrowableOfType(() -> entryService.deleteEntry(1, principal), EntryException.class);
 
         Assertions.assertThat(exception).isInstanceOf(EntryException.class);
-        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user"));
+        Assertions.assertThat(exception.getError()).isEqualTo(EntryError.ENTRY_ERROR("This entry belongs to another user."));
         verify(entryRepository, never()).deleteById(any());
     }
 }

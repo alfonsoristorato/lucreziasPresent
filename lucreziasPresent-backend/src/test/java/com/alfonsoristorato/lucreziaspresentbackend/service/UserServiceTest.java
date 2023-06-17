@@ -133,7 +133,7 @@ public class UserServiceTest {
         UserException ex = Assertions.assertThrows(UserException.class,
                 () -> userService.changePassword(passwordChangeRequestDTO, principal));
 
-        Assertions.assertEquals(UserError.DISALLOWED_CHANGE("You cannot change the password for another user."), ex.getError());
+        Assertions.assertEquals(UserError.DISALLOWED_CHANGE(), ex.getError());
         verify(userRepository, never()).save(any());
     }
 

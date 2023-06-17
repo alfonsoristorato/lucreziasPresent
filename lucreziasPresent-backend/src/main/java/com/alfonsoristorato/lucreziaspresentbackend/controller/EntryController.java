@@ -35,10 +35,10 @@ public class EntryController {
     }
 
     @PatchMapping("/{entryId}")
-    public ResponseEntity<Entry> editEntry(@Valid @ModelAttribute EntryFormWrapper entry,
+    public ResponseEntity<Void> editEntry(@Valid @ModelAttribute EntryFormWrapper entry,
                                            @PathVariable Integer entryId, Principal user) {
         entryService.editEntry(entry, entryId, user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{entryId}")

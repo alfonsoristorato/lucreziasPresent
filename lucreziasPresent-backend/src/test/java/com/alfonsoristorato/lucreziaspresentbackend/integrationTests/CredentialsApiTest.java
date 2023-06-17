@@ -124,10 +124,10 @@ public class CredentialsApiTest extends IntegrationTestsConfig {
                     .when()
                     .post("/change-password")
                     .then()
-                    .statusCode(500)
+                    .statusCode(403)
                     .body(
                             "size()", equalTo(2),
-                            "description", equalTo("Disallowed change"),
+                            "description", equalTo("User error"),
                             "details", equalTo("You cannot change the password for another user.")
                     );
         }

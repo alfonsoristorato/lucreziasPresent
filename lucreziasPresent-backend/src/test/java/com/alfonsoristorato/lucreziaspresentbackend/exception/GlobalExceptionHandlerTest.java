@@ -56,7 +56,7 @@ public class GlobalExceptionHandlerTest {
     private static Stream<Arguments> userExceptionTestData(){
         return Stream.of(
                 Arguments.of(UserError.USER_NOT_FOUND(), HttpStatus.NOT_FOUND),
-                Arguments.of(UserError.DISALLOWED_CHANGE("you can't change this"), HttpStatus.INTERNAL_SERVER_ERROR),
+                Arguments.of(UserError.DISALLOWED_CHANGE(), HttpStatus.FORBIDDEN),
                 Arguments.of(UserError.USER_ERROR("this is an error"), HttpStatus.INTERNAL_SERVER_ERROR)
         );
     }
@@ -64,6 +64,7 @@ public class GlobalExceptionHandlerTest {
     private static Stream<Arguments> entryExceptionTestData(){
         return Stream.of(
                 Arguments.of(EntryError.ENTRY_NOT_FOUND(), HttpStatus.NOT_FOUND),
+                Arguments.of(EntryError.DISALLOWED_CHANGE(), HttpStatus.FORBIDDEN),
                 Arguments.of(EntryError.ENTRY_ERROR("this is an error"), HttpStatus.INTERNAL_SERVER_ERROR)
         );
     }
