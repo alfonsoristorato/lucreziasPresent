@@ -21,7 +21,7 @@ public class EntryFormWrapper {
     private String content;
     @NotNull
     private String title;
-    @NotNull
+
     private Integer icon;
     @NotNull
     private String color;

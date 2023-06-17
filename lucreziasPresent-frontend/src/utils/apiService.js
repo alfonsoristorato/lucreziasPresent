@@ -36,7 +36,7 @@ export const getData = async (
   try {
     const response = await callApi("entry", "GET", null, authenticated);
     setEntries(response);
-    if (authenticated.role === "admin") {
+    if (authenticated.role === "admin" && setUsers) {
       getUsers(setUsers, authenticated);
     }
     setIsLoading(false);
@@ -54,7 +54,7 @@ export const addEntry = async (
 ) => {
   try {
     await callApi("entry", "POST", data, authenticated);
-    await getData(setter, authenticated, setIsLoading);
+    await getData(setter, authenticated, setIsLoading, null);
     handleClose();
   } catch (error) {
     throw error;
@@ -71,7 +71,7 @@ export const editEntry = async (
 ) => {
   try {
     await callApi(`entry/${id}`, "PATCH", data, authenticated);
-    await getData(setter, authenticated, setIsLoading);
+    await getData(setter, authenticated, setIsLoading, null);
     handleClose();
   } catch (error) {
     throw error;
@@ -87,7 +87,7 @@ export const deleteEntry = async (
 ) => {
   try {
     await callApi(`entry/${id}`, "DELETE", null, authenticated);
-    await getData(setter, authenticated, setIsLoading);
+    await getData(setter, authenticated, setIsLoading, null);
     handleClose();
   } catch (error) {
     throw error;

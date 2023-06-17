@@ -25,7 +25,6 @@ const AddEntryForm = ({
     setFileTypeError(false);
     setFileSizeError(false);
     let validForm = true;
-    console.log(data);
     if (!editMode && data.file[0]) {
       if (
         !["image/jpeg", "image/png", "image/jpg", "image/gif"].includes(
