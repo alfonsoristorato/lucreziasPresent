@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import { useForm } from "react-hook-form";
+import heic2any from "heic2any";
 
 import { addEntry, editEntry } from "../utils/apiService";
 
@@ -21,15 +22,19 @@ const AddEntryForm = ({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setFileTypeError(false);
     setFileSizeError(false);
     let validForm = true;
     if (!editMode && data.file[0]) {
       if (
-        !["image/jpeg", "image/png", "image/jpg", "image/gif"].includes(
-          data.file[0]?.type
-        )
+        ![
+          "image/jpeg",
+          "image/png",
+          "image/jpg",
+          "image/gif",
+          "image/heic",
+        ].includes(data.file[0]?.type)
       ) {
         setFileTypeError(true);
         validForm = false;
@@ -42,7 +47,23 @@ const AddEntryForm = ({
     if (validForm) {
       setIsLoading(true);
       let formData = new FormData();
-      !editMode && data.file[0] && formData.append("file", data.file[0]);
+      if (!editMode && data.file[0]) {
+        let file = data.file[0];
+        if (file.type === "image/heic") {
+          let fileName = file.name.split(".heic")[0];
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8,
+          });
+          let convertedFile = new File([convertedBlob], `${fileName}.jpg`, {
+            type: `image/jpg`,
+          });
+          formData.append("file", convertedFile);
+        } else {
+          formData.append("file", file);
+        }
+      }
       formData.append("color", data.color);
       formData.append("content", data.content.trim());
       formData.append("date", data.date);
@@ -136,7 +157,7 @@ const AddEntryForm = ({
           <Form.Control
             as="input"
             type="file"
-            accept="image/*"
+            accept="image/*,.heic"
             onChangeCapture={() => {
               setFileTypeError(false);
               setFileSizeError(false);
